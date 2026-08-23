@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: analytics
+      POSTGRES_PASSWORD: analytics_dev
+      POSTGRES_DB: retention_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U analytics"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://analytics:analytics_dev@postgres:5432/retention_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=dev-secret-change-in-production-use-32-char-min
+      - DEBUG=true
+      - ALLOWED_ORIGINS=["http://localhost:5173"]
+    volumes:
+      - ./backend/app:/app/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/v1
+    command: npm run dev -- --host
+
+  data-generator:
+    build: ./data-generator
+    environment:
+      - DATABASE_URL=postgresql://analytics:analytics_dev@postgres:5432/retention_db
+    depends_on:
+      - postgres
+    profiles: ["seed"]
+
+volumes:
+  postgres_data:
