@@ -3,7 +3,7 @@ from datetime import UTC, datetime, time, timedelta
 
 import numpy as np
 
-from config import EVENT_NAMESPACE, SESSION_NAMESPACE
+from config import ACTIVITY_SCALE, EVENT_NAMESPACE, SESSION_NAMESPACE
 from generators.funnel import session_events
 from generators.lifecycle import active_probability, sessions_for_active_day
 from generators.revenue import purchase_amount
@@ -14,14 +14,12 @@ def generate_user_events(
     variant: str,
     rng: np.random.Generator,
     end_date,
-    target_per_user: int,
 ) -> list[dict]:
     rows: list[dict] = []
     uid = user["id"]
     signup = user["signup_date"]
     anonymous_id = f"anon_{str(uid).replace('-', '')[:16]}"
 
-    # Visit -> Signup makes the acquisition funnel explicit.
     signup_at = datetime.combine(signup, time(hour=10), tzinfo=UTC)
     rows.append(
         _event(
@@ -47,21 +45,25 @@ def generate_user_events(
     )
 
     day = signup
-    max_events = max(12, target_per_user)
     session_ordinal = 0
 
-    while day <= end_date and len(rows) < max_events:
+    # Generate across the complete lifecycle. The previous per-user event cap
+    # made high-engagement users hit their cap early, which biased last-seen
+    # retention downward for organic users.
+    while day <= end_date:
         age = (day - signup).days
         weekend = day.weekday() >= 5
+        activity_probability = min(
+            0.95,
+            active_probability(
+                user["acquisition_channel"], user["baseline_engagement"], age
+            )
+            * ACTIVITY_SCALE,
+        )
 
-        if rng.random() < active_probability(
-            user["acquisition_channel"], user["baseline_engagement"], age
-        ):
+        if rng.random() < activity_probability:
             sessions = sessions_for_active_day(rng, user["baseline_engagement"], weekend)
             for _ in range(sessions):
-                if len(rows) >= max_events:
-                    break
-
                 session_ordinal += 1
                 session_id = uuid.uuid5(
                     SESSION_NAMESPACE,
@@ -81,6 +83,10 @@ def generate_user_events(
                 for stage in stages:
                     offset += int(rng.integers(10, 120))
                     at = base + timedelta(seconds=offset)
+                    # A late-night session may cross midnight. Keep the synthetic
+                    # dataset strictly bounded by GENERATOR_END_DATE.
+                    if at.date() > end_date:
+                        break
                     revenue = purchase_amount(rng) if stage == "purchase" else 0
                     rows.append(
                         _event(
@@ -98,10 +104,7 @@ def generate_user_events(
                             },
                         )
                     )
-                    if len(rows) >= max_events:
-                        break
 
-        # Sparse stepping avoids an unnecessary 365-iteration loop for every user.
         day += timedelta(days=int(rng.integers(1, 5)))
 
     return rows

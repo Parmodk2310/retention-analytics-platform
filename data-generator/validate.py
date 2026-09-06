@@ -40,9 +40,12 @@ def validate() -> dict:
                     SELECT
                         u.acquisition_channel,
                         u.id,
-                        MAX(e.event_date) AS last_seen
+                        MAX(e.event_date) FILTER (
+                            WHERE e.event_name NOT IN ('signup')
+                        ) AS last_seen
                     FROM users u
                     LEFT JOIN events e ON e.user_id=u.id
+                    WHERE u.signup_date <= %s::date - INTERVAL '60 days'
                     GROUP BY 1,2
                 )
                 SELECT
@@ -56,7 +59,7 @@ def validate() -> dict:
                 FROM cohort
                 GROUP BY 1
                 """,
-                (END_DATE,),
+                (END_DATE, END_DATE),
             )
             retention = dict(cur.fetchall())
 

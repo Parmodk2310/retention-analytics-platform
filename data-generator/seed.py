@@ -1,5 +1,5 @@
+import hashlib
 import json
-import math
 
 import numpy as np
 import psycopg
@@ -69,10 +69,14 @@ def reset_analytics(cur) -> None:
     )
 
 
+def rng_for_user(user_id) -> np.random.Generator:
+    digest = hashlib.sha256(f"{SEED}:{user_id}".encode()).digest()
+    return np.random.default_rng(int.from_bytes(digest[:8], "big"))
+
+
 def seed() -> dict:
-    rng = np.random.default_rng(SEED)
-    users = generate_users(rng)
-    target_per_user = math.ceil(TARGET_EVENTS / max(N_USERS, 1))
+    user_rng = np.random.default_rng(SEED)
+    users = generate_users(user_rng)
     event_count = 0
 
     with psycopg.connect(DATABASE_URL) as conn:
@@ -128,9 +132,8 @@ def seed() -> dict:
                         generate_user_events(
                             user,
                             variant,
-                            rng,
+                            rng_for_user(user["id"]),
                             END_DATE,
-                            target_per_user,
                         )
                     )
 
@@ -155,7 +158,9 @@ def seed() -> dict:
                     exposures,
                 )
 
-                prepared = [{**event, "properties": Jsonb(event["properties"])} for event in events]
+                prepared = [
+                    {**event, "properties": Jsonb(event["properties"])} for event in events
+                ]
                 for event_batch in chunks(prepared, 5_000):
                     cur.executemany(EVENT_SQL, event_batch)
 
