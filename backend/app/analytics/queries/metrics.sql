@@ -1,13 +1,59 @@
-WITH bounds AS (SELECT (CURRENT_DATE - (:days * INTERVAL '1 day'))::date AS start_date, CURRENT_DATE AS end_date),
-activity AS (
- SELECT COUNT(DISTINCT user_id) FILTER (WHERE event_date=CURRENT_DATE) AS dau,
-        COUNT(DISTINCT user_id) FILTER (WHERE event_date>=CURRENT_DATE-INTERVAL '6 days') AS wau,
-        COUNT(DISTINCT user_id) FILTER (WHERE event_date>=CURRENT_DATE-INTERVAL '29 days') AS mau,
-        COALESCE(SUM(revenue) FILTER (WHERE event_name='purchase'),0) AS revenue,
-        COUNT(DISTINCT user_id) FILTER (WHERE event_name='purchase') AS purchasers
- FROM events,bounds WHERE event_date BETWEEN bounds.start_date AND bounds.end_date),
-new_users AS (SELECT COUNT(*) AS value FROM users,bounds WHERE signup_date BETWEEN bounds.start_date AND bounds.end_date)
-SELECT dau,wau,mau,CASE WHEN mau=0 THEN 0 ELSE ROUND(dau::numeric/mau,4) END AS stickiness,
-       revenue::float,purchasers,CASE WHEN purchasers=0 THEN 0 ELSE ROUND(revenue::numeric/purchasers,2)::float END AS arpu,
-       new_users.value AS new_users
-FROM activity CROSS JOIN new_users;
+WITH anchor AS (
+    SELECT COALESCE(MAX(event_date), CURRENT_DATE)::date AS as_of_date
+    FROM events
+),
+period_bounds AS (
+    SELECT
+        as_of_date,
+        (as_of_date - ((:days - 1) * INTERVAL '1 day'))::date AS start_date
+    FROM anchor
+),
+engagement AS (
+    SELECT
+        COUNT(DISTINCT e.user_id) FILTER (
+            WHERE e.event_date = b.as_of_date
+        )::int AS dau,
+        COUNT(DISTINCT e.user_id) FILTER (
+            WHERE e.event_date BETWEEN (b.as_of_date - INTERVAL '6 days')::date AND b.as_of_date
+        )::int AS wau,
+        COUNT(DISTINCT e.user_id) FILTER (
+            WHERE e.event_date BETWEEN (b.as_of_date - INTERVAL '29 days')::date AND b.as_of_date
+        )::int AS mau
+    FROM events e
+    CROSS JOIN period_bounds b
+    WHERE e.event_date BETWEEN (b.as_of_date - INTERVAL '29 days')::date AND b.as_of_date
+),
+period_commerce AS (
+    SELECT
+        COALESCE(SUM(e.revenue) FILTER (WHERE e.event_name = 'purchase'), 0)::float AS revenue,
+        COUNT(DISTINCT e.user_id) FILTER (WHERE e.event_name = 'purchase')::int AS purchasers
+    FROM events e
+    CROSS JOIN period_bounds b
+    WHERE e.event_date BETWEEN b.start_date AND b.as_of_date
+),
+new_users AS (
+    SELECT COUNT(*)::int AS value
+    FROM users u
+    CROSS JOIN period_bounds b
+    WHERE u.signup_date BETWEEN b.start_date AND b.as_of_date
+)
+SELECT
+    b.as_of_date,
+    g.dau,
+    g.wau,
+    g.mau,
+    CASE
+        WHEN g.mau = 0 THEN 0.0
+        ELSE ROUND(g.dau::numeric / g.mau, 4)::float
+    END AS stickiness,
+    c.revenue,
+    c.purchasers,
+    CASE
+        WHEN c.purchasers = 0 THEN 0.0
+        ELSE ROUND(c.revenue::numeric / c.purchasers, 2)::float
+    END AS arpu,
+    n.value AS new_users
+FROM period_bounds b
+CROSS JOIN engagement g
+CROSS JOIN period_commerce c
+CROSS JOIN new_users n;
