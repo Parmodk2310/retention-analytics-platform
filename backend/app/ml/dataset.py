@@ -1,10 +1,12 @@
-from datetime import date,timedelta
+from datetime import date, timedelta
+
 import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
+
 from app.ml.labels import churn_label
 
-SNAPSHOT_SQL=text("""
+SNAPSHOT_SQL = text("""
 WITH eligible AS (
   SELECT id AS user_id,acquisition_channel,device_type FROM users
   WHERE signup_date <= CAST(:snapshot_date AS date)-INTERVAL '30 days'
@@ -30,18 +32,32 @@ future AS (
 SELECT f.*,future.future_activity FROM features f JOIN future USING(user_id)
 """)
 
-def build_snapshot(engine:Engine,snapshot_date:date,label_days:int=30)->pd.DataFrame:
+
+def build_snapshot(engine: Engine, snapshot_date: date, label_days: int = 30) -> pd.DataFrame:
     with engine.connect() as conn:
-        df=pd.read_sql(SNAPSHOT_SQL,conn,params={"snapshot_date":snapshot_date,"label_days":label_days})
-    df["snapshot_date"]=pd.Timestamp(snapshot_date)
-    if label_days>0: df["churned"]=df["future_activity"].map(churn_label).astype(int)
+        df = pd.read_sql(
+            SNAPSHOT_SQL, conn, params={"snapshot_date": snapshot_date, "label_days": label_days}
+        )
+    df["snapshot_date"] = pd.Timestamp(snapshot_date)
+    if label_days > 0:
+        df["churned"] = df["future_activity"].map(churn_label).astype(int)
     return df
 
-def build_training_dataset(engine:Engine,end_date:date|None=None,snapshots:int=8,spacing_days:int=30,label_days:int=30)->pd.DataFrame:
-    end=end_date or (date.today()-timedelta(days=label_days+1))
-    frames=[]
+
+def build_training_dataset(
+    engine: Engine,
+    end_date: date | None = None,
+    snapshots: int = 8,
+    spacing_days: int = 30,
+    label_days: int = 30,
+) -> pd.DataFrame:
+    end = end_date or (date.today() - timedelta(days=label_days + 1))
+    frames = []
     for i in range(snapshots):
-        snap=end-timedelta(days=i*spacing_days);df=build_snapshot(engine,snap,label_days)
-        if not df.empty:frames.append(df)
-    if not frames:raise RuntimeError("No training rows. Seed enough historical events first.")
-    return pd.concat(frames,ignore_index=True)
+        snap = end - timedelta(days=i * spacing_days)
+        df = build_snapshot(engine, snap, label_days)
+        if not df.empty:
+            frames.append(df)
+    if not frames:
+        raise RuntimeError("No training rows. Seed enough historical events first.")
+    return pd.concat(frames, ignore_index=True)

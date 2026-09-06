@@ -1,6 +1,22 @@
-SELECT date_trunc('month',event_time AT TIME ZONE 'UTC')::date AS month,
-       COALESCE(SUM(revenue),0)::float AS revenue,
-       COUNT(DISTINCT user_id) FILTER (WHERE event_name='purchase') AS purchasers,
-       COUNT(*) FILTER (WHERE event_name='purchase') AS orders
-FROM events WHERE event_name='purchase' AND event_time>=NOW()-(:months*INTERVAL '1 month')
-GROUP BY 1 ORDER BY 1;
+WITH anchor AS (
+    SELECT COALESCE(MAX(event_date), CURRENT_DATE)::date AS as_of_date
+    FROM events
+),
+bounds AS (
+    SELECT
+        (date_trunc('month', as_of_date) - ((:months - 1) * INTERVAL '1 month'))::date AS first_month,
+        (as_of_date + INTERVAL '1 day')::timestamp AS end_exclusive
+    FROM anchor
+)
+SELECT
+    date_trunc('month', e.event_time AT TIME ZONE 'UTC')::date AS month,
+    COALESCE(SUM(e.revenue), 0)::float AS revenue,
+    COUNT(DISTINCT e.user_id)::int AS purchasers,
+    COUNT(*)::int AS orders
+FROM events e
+CROSS JOIN bounds b
+WHERE e.event_name = 'purchase'
+  AND e.event_time >= b.first_month
+  AND e.event_time < b.end_exclusive
+GROUP BY month
+ORDER BY month;

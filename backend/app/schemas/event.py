@@ -39,7 +39,7 @@ class EventIn(BaseModel):
         return value
 
     @model_validator(mode="after")
-    def validate_event(self) -> "EventIn":
+    def validate_event(self) -> EventIn:
         if self.event_time.tzinfo is None or self.event_time.utcoffset() is None:
             raise ValueError("event_time must be timezone-aware")
 
