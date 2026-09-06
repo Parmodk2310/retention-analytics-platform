@@ -6,7 +6,10 @@ cohort_bounds AS (
     SELECT
         date_trunc('month', as_of_date)::date AS current_month,
         (date_trunc('month', as_of_date) - INTERVAL '1 month')::date AS last_complete_month,
-        (date_trunc('month', as_of_date) - (:months * INTERVAL '1 month'))::date AS first_month,
+        (
+            date_trunc('month', as_of_date)
+            - (CAST(:months AS integer) * INTERVAL '1 month')
+        )::date AS first_month,
         date_trunc('month', as_of_date)::timestamp AS end_exclusive
     FROM anchor
 ),
@@ -25,7 +28,10 @@ cohorts AS (
       )
 ),
 cohort_sizes AS (
-    SELECT cohort_month, acquisition_channel, COUNT(*)::int AS cohort_size
+    SELECT
+        cohort_month,
+        acquisition_channel,
+        COUNT(*)::int AS cohort_size
     FROM cohorts
     GROUP BY cohort_month, acquisition_channel
 ),
@@ -50,7 +56,7 @@ period_grid AS (
     CROSS JOIN LATERAL generate_series(
         0,
         LEAST(
-            :months - 1,
+            CAST(:months AS integer) - 1,
             (
                 (EXTRACT(YEAR FROM b.last_complete_month) - EXTRACT(YEAR FROM s.cohort_month)) * 12
                 + EXTRACT(MONTH FROM b.last_complete_month)

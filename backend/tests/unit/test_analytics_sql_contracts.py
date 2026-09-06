@@ -33,6 +33,11 @@ def test_optional_channel_bind_is_explicitly_typed_for_asyncpg() -> None:
         assert "cast(:channel as varchar)" in sql
 
 
+def test_retention_months_bind_is_explicitly_typed_for_asyncpg() -> None:
+    sql = read_query("retention")
+    assert "cast(:months as integer)" in sql
+
+
 def test_retention_excludes_incomplete_current_month() -> None:
     sql = read_query("retention")
     assert "last_complete_month" in sql
