@@ -2,8 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db
-from app.ml.predict import get_predictor
+from app.api.deps import get_current_account
+from app.db.session import get_db
+from app.db.models import Account
+
 
 router = APIRouter(prefix="/ml", tags=["machine-learning"])
 
@@ -22,7 +24,7 @@ class RetrainRequest(BaseModel):
 async def predict_churn(
     req: ChurnPredictionRequest,
     db: Session = Depends(get_db),
-    current_user: int = Depends(get_current_user),
+    current_account: Account = Depends(get_current_account),
 ):
     """Predict churn probability for users."""
     predictor = get_predictor()
@@ -34,15 +36,20 @@ async def predict_churn(
             "total_scored": len(results),
             "high_risk_count": sum(1 for r in results if r["risk_level"] == "high"),
         }
-    except Exception as e:
-        raise HTTPException(500, f"Prediction failed: {str(e)}")
+    except Exception as exc:
+        raise HTTPException(
+        status_code=500,
+        detail=f"Prediction failed: {exc}",
+    ) from exc
 
 
 @router.get("/churn/user/{user_id}")
 async def predict_single_user(
-    user_id: int, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_account: Account = Depends(get_current_account),
 ):
-    """Predict churn for a single user."""
+
     predictor = get_predictor()
     result = predictor.predict_single(db, user_id)
 
