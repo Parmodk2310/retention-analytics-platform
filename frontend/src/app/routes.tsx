@@ -1,1 +1,39 @@
-import {Navigate,Outlet,createBrowserRouter} from 'react-router-dom';import {AppShell} from '@/components/layout/AppShell';import {useAuthStore} from '@/store/authStore';import Login from '@/pages/Login';import Dashboard from '@/pages/Dashboard';import ProductMetrics from '@/pages/ProductMetrics';import FunnelAnalysis from '@/pages/FunnelAnalysis';import CohortAnalysis from '@/pages/CohortAnalysis';import ChurnPrediction from '@/pages/ChurnPrediction';import Experiments from '@/pages/Experiments';import ExperimentDetail from '@/pages/ExperimentDetail';import ModelHealth from '@/pages/ModelHealth';import Settings from '@/pages/Settings';function Protected(){return useAuthStore(s=>s.accessToken)?<Outlet/>:<Navigate to="/login" replace/>}export const router=createBrowserRouter([{path:'/login',element:<Login/>},{element:<Protected/>,children:[{element:<AppShell/>,children:[{index:true,element:<Dashboard/>},{path:'/metrics',element:<ProductMetrics/>},{path:'/funnel',element:<FunnelAnalysis/>},{path:'/cohorts',element:<CohortAnalysis/>},{path:'/churn',element:<ChurnPrediction/>},{path:'/experiments',element:<Experiments/>},{path:'/experiments/:id',element:<ExperimentDetail/>},{path:'/model-health',element:<ModelHealth/>},{path:'/settings',element:<Settings/>}]}]}])
+import { createBrowserRouter } from 'react-router-dom'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { AppShell } from '@/components/layout/AppShell'
+import ChurnPrediction from '@/pages/ChurnPrediction'
+import CohortAnalysis from '@/pages/CohortAnalysis'
+import Dashboard from '@/pages/Dashboard'
+import ExperimentDetail from '@/pages/ExperimentDetail'
+import Experiments from '@/pages/Experiments'
+import FunnelAnalysis from '@/pages/FunnelAnalysis'
+import Login from '@/pages/Login'
+import ModelHealth from '@/pages/ModelHealth'
+import ProductMetrics from '@/pages/ProductMetrics'
+import Settings from '@/pages/Settings'
+
+export const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppShell />,
+        children: [
+          { index: true, element: <Dashboard /> },
+          { path: '/metrics', element: <ProductMetrics /> },
+          { path: '/funnel', element: <FunnelAnalysis /> },
+          { path: '/cohorts', element: <CohortAnalysis /> },
+          { path: '/churn', element: <ChurnPrediction /> },
+          { path: '/experiments', element: <Experiments /> },
+          { path: '/experiments/:id', element: <ExperimentDetail /> },
+          { path: '/model-health', element: <ModelHealth /> },
+          { path: '/settings', element: <Settings /> },
+        ],
+      },
+    ],
+  },
+])
