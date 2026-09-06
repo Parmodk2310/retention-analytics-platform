@@ -23,3 +23,6 @@ coverage/
 .terraform.lock.hcl
 backend/app/ml/artifacts/*
 !backend/app/ml/artifacts/.gitkeep
+*.tsbuildinfo
+
+*.tsbuildinfo

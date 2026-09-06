@@ -1,0 +1,768 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="markmap mm-0tivv3-3" style="width: 100%; height: 100%;"><style>.markmap{--markmap-max-width: 9999px;--markmap-a-color: #0097e6;--markmap-a-hover-color: #00a8ff;--markmap-code-bg: #f0f0f0;--markmap-code-color: #555;--markmap-highlight-bg: #ffeaa7;--markmap-table-border: 1px solid currentColor;--markmap-font: 300 16px/20px sans-serif;--markmap-circle-open-bg: #fff;--markmap-text-color: #333;--markmap-highlight-node-bg: #ff02;font:var(--markmap-font);color:var(--markmap-text-color)}.markmap-link{fill:none}.markmap-node&gt;circle{cursor:pointer}.markmap-foreign{display:inline-block}.markmap-foreign p{margin:0}.markmap-foreign a{color:var(--markmap-a-color)}.markmap-foreign a:hover{color:var(--markmap-a-hover-color)}.markmap-foreign code{padding:.25em;font-size:calc(1em - 2px);color:var(--markmap-code-color);background-color:var(--markmap-code-bg);border-radius:2px}.markmap-foreign pre{margin:0}.markmap-foreign pre&gt;code{display:block}.markmap-foreign del{text-decoration:line-through}.markmap-foreign em{font-style:italic}.markmap-foreign strong{font-weight:700}.markmap-foreign mark{background:var(--markmap-highlight-bg)}.markmap-foreign table,.markmap-foreign th,.markmap-foreign td{border-collapse:collapse;border:var(--markmap-table-border)}.markmap-foreign img{display:inline-block}.markmap-foreign svg{fill:currentColor}.markmap-foreign&gt;div{width:var(--markmap-max-width);text-align:left}.markmap-foreign&gt;div&gt;div{display:inline-block}.markmap-highlight rect{fill:var(--markmap-highlight-node-bg)}.markmap-dark .markmap{--markmap-code-bg: #1a1b26;--markmap-code-color: #ddd;--markmap-circle-open-bg: #444;--markmap-text-color: #eee}</style><g transform="translate(113.32983065917637,304.74558460978864) scale(0.18429454795295638)"><path class="markmap-link" data-depth="3" data-path="1.2.3" d="M672,-1476.312C712,-1476.312,712,-1401.5,752,-1401.5" stroke-width="1.375" stroke="rgb(44, 160, 44)"/><path class="markmap-link" data-depth="4" data-path="1.4.5.6" d="M1041,-1347.625C1081,-1347.625,1081,-1325.219,1121,-1325.219" stroke-width="1.1875" stroke="rgb(140, 86, 75)"/><path class="markmap-link" data-depth="4" data-path="1.4.7.8" d="M963,-1249.437C1003,-1249.437,1003,-1207.031,1043,-1207.031" stroke-width="1.1875" stroke="rgb(127, 127, 127)"/><path class="markmap-link" data-depth="4" data-path="1.4.9.10" d="M985,-1099.75C1025,-1099.75,1025,-1025.844,1065,-1025.844" stroke-width="1.1875" stroke="rgb(23, 190, 207)"/><path class="markmap-link" data-depth="4" data-path="1.4.11.12" d="M945,-918.562C985,-918.562,985,-844.656,1025,-844.656" stroke-width="1.1875" stroke="rgb(255, 127, 14)"/><path class="markmap-link" data-depth="4" data-path="1.4.13.14" d="M1014,-768.875C1054,-768.875,1054,-726.469,1094,-726.469" stroke-width="1.1875" stroke="rgb(214, 39, 40)"/><path class="markmap-link" data-depth="4" data-path="1.4.15.16" d="M1120,-650.687C1160,-650.687,1160,-608.281,1200,-608.281" stroke-width="1.1875" stroke="rgb(140, 86, 75)"/><path class="markmap-link" data-depth="4" data-path="1.4.17.18" d="M999,-522C1039,-522,1039,-469.094,1079,-469.094" stroke-width="1.1875" stroke="rgb(127, 127, 127)"/><path class="markmap-link" data-depth="4" data-path="1.4.19.20" d="M1054,-393.312C1094,-393.312,1094,-350.906,1134,-350.906" stroke-width="1.1875" stroke="rgb(23, 190, 207)"/><path class="markmap-link" data-depth="4" data-path="1.4.21.22" d="M1024,-285.625C1064,-285.625,1064,-253.719,1104,-253.719" stroke-width="1.1875" stroke="rgb(255, 127, 14)"/><path class="markmap-link" data-depth="4" data-path="1.4.23.24" d="M949,-188.437C989,-188.437,989,-156.531,1029,-156.531" stroke-width="1.1875" stroke="rgb(214, 39, 40)"/><path class="markmap-link" data-depth="3" data-path="1.4.5" d="M725,-766.844C765,-766.844,765,-1347.625,805,-1347.625" stroke-width="1.375" stroke="rgb(148, 103, 189)"/><path class="markmap-link" data-depth="3" data-path="1.4.7" d="M725,-766.844C765,-766.844,765,-1249.437,805,-1249.437" stroke-width="1.375" stroke="rgb(227, 119, 194)"/><path class="markmap-link" data-depth="3" data-path="1.4.9" d="M725,-766.844C765,-766.844,765,-1099.75,805,-1099.75" stroke-width="1.375" stroke="rgb(188, 189, 34)"/><path class="markmap-link" data-depth="3" data-path="1.4.11" d="M725,-766.844C765,-766.844,765,-918.562,805,-918.562" stroke-width="1.375" stroke="rgb(31, 119, 180)"/><path class="markmap-link" data-depth="3" data-path="1.4.13" d="M725,-766.844C765,-766.844,765,-768.875,805,-768.875" stroke-width="1.375" stroke="rgb(44, 160, 44)"/><path class="markmap-link" data-depth="3" data-path="1.4.15" d="M725,-766.844C765,-766.844,765,-650.687,805,-650.687" stroke-width="1.375" stroke="rgb(148, 103, 189)"/><path class="markmap-link" data-depth="3" data-path="1.4.17" d="M725,-766.844C765,-766.844,765,-522,805,-522" stroke-width="1.375" stroke="rgb(227, 119, 194)"/><path class="markmap-link" data-depth="3" data-path="1.4.19" d="M725,-766.844C765,-766.844,765,-393.312,805,-393.312" stroke-width="1.375" stroke="rgb(188, 189, 34)"/><path class="markmap-link" data-depth="3" data-path="1.4.21" d="M725,-766.844C765,-766.844,765,-285.625,805,-285.625" stroke-width="1.375" stroke="rgb(31, 119, 180)"/><path class="markmap-link" data-depth="3" data-path="1.4.23" d="M725,-766.844C765,-766.844,765,-188.437,805,-188.437" stroke-width="1.375" stroke="rgb(44, 160, 44)"/><path class="markmap-link" data-depth="3" data-path="1.25.26" d="M812,-101.562C852,-101.562,852,-80.25,892,-80.25" stroke-width="1.375" stroke="rgb(140, 86, 75)"/><path class="markmap-link" data-depth="4" data-path="1.27.28.29" d="M894,-5.375C934,-5.375,934,38.031,974,38.031" stroke-width="1.1875" stroke="rgb(188, 189, 34)"/><path class="markmap-link" data-depth="4" data-path="1.27.30.31" d="M882,133.813C922,133.813,922,198.219,962,198.219" stroke-width="1.1875" stroke="rgb(31, 119, 180)"/><path class="markmap-link" data-depth="4" data-path="1.27.32.33" d="M983,252C1023,252,1023,274.406,1063,274.406" stroke-width="1.1875" stroke="rgb(44, 160, 44)"/><path class="markmap-link" data-depth="4" data-path="1.27.34.35" d="M917,338.688C957,338.688,957,371.594,997,371.594" stroke-width="1.1875" stroke="rgb(148, 103, 189)"/><path class="markmap-link" data-depth="4" data-path="1.27.36.37" d="M893,435.875C933,435.875,933,468.781,973,468.781" stroke-width="1.1875" stroke="rgb(227, 119, 194)"/><path class="markmap-link" data-depth="4" data-path="1.27.38.39" d="M890,522.563C930,522.563,930,544.969,970,544.969" stroke-width="1.1875" stroke="rgb(188, 189, 34)"/><path class="markmap-link" data-depth="4" data-path="1.27.40.41" d="M938,651.25C978,651.25,978,726.156,1018,726.156" stroke-width="1.1875" stroke="rgb(31, 119, 180)"/><path class="markmap-link" data-depth="4" data-path="1.27.42.43" d="M893,821.938C933,821.938,933,886.344,973,886.344" stroke-width="1.1875" stroke="rgb(44, 160, 44)"/><path class="markmap-link" data-depth="3" data-path="1.27.28" d="M725,409.469C765,409.469,765,-5.375,805,-5.375" stroke-width="1.375" stroke="rgb(127, 127, 127)"/><path class="markmap-link" data-depth="3" data-path="1.27.30" d="M725,409.469C765,409.469,765,133.813,805,133.813" stroke-width="1.375" stroke="rgb(23, 190, 207)"/><path class="markmap-link" data-depth="3" data-path="1.27.32" d="M725,409.469C765,409.469,765,252,805,252" stroke-width="1.375" stroke="rgb(255, 127, 14)"/><path class="markmap-link" data-depth="3" data-path="1.27.34" d="M725,409.469C765,409.469,765,338.688,805,338.688" stroke-width="1.375" stroke="rgb(214, 39, 40)"/><path class="markmap-link" data-depth="3" data-path="1.27.36" d="M725,409.469C765,409.469,765,435.875,805,435.875" stroke-width="1.375" stroke="rgb(140, 86, 75)"/><path class="markmap-link" data-depth="3" data-path="1.27.38" d="M725,409.469C765,409.469,765,522.563,805,522.563" stroke-width="1.375" stroke="rgb(127, 127, 127)"/><path class="markmap-link" data-depth="3" data-path="1.27.40" d="M725,409.469C765,409.469,765,651.25,805,651.25" stroke-width="1.375" stroke="rgb(23, 190, 207)"/><path class="markmap-link" data-depth="3" data-path="1.27.42" d="M725,409.469C765,409.469,765,821.938,805,821.938" stroke-width="1.375" stroke="rgb(255, 127, 14)"/><path class="markmap-link" data-depth="4" data-path="1.44.45.46" d="M851,982.125C891,982.125,891,1046.531,931,1046.531" stroke-width="1.1875" stroke="rgb(140, 86, 75)"/><path class="markmap-link" data-depth="4" data-path="1.44.47.48" d="M920,1121.313C960,1121.313,960,1164.719,1000,1164.719" stroke-width="1.1875" stroke="rgb(127, 127, 127)"/><path class="markmap-link" data-depth="4" data-path="1.44.49.50" d="M844,1239.5C884,1239.5,884,1282.906,924,1282.906" stroke-width="1.1875" stroke="rgb(23, 190, 207)"/><path class="markmap-link" data-depth="4" data-path="1.44.51.52" d="M875,1378.688C915,1378.688,915,1443.094,955,1443.094" stroke-width="1.1875" stroke="rgb(255, 127, 14)"/><path class="markmap-link" data-depth="3" data-path="1.44.45" d="M678,1180.594C718,1180.594,718,982.125,758,982.125" stroke-width="1.375" stroke="rgb(148, 103, 189)"/><path class="markmap-link" data-depth="3" data-path="1.44.47" d="M678,1180.594C718,1180.594,718,1121.313,758,1121.313" stroke-width="1.375" stroke="rgb(227, 119, 194)"/><path class="markmap-link" data-depth="3" data-path="1.44.49" d="M678,1180.594C718,1180.594,718,1239.5,758,1239.5" stroke-width="1.375" stroke="rgb(188, 189, 34)"/><path class="markmap-link" data-depth="3" data-path="1.44.51" d="M678,1180.594C718,1180.594,718,1378.688,758,1378.688" stroke-width="1.375" stroke="rgb(31, 119, 180)"/><path class="markmap-link" data-depth="4" data-path="1.53.54.55" d="M964,1497.875C1004,1497.875,1004,1521.281,1044,1521.281" stroke-width="1.1875" stroke="rgb(148, 103, 189)"/><path class="markmap-link" data-depth="3" data-path="1.53.54" d="M731,1498.063C771,1498.063,771,1497.875,811,1497.875" stroke-width="1.375" stroke="rgb(214, 39, 40)"/><path class="markmap-link" data-depth="2" data-path="1.2" d="M470,11.25C510,11.25,510,-1476.312,550,-1476.312" stroke-width="1.75" stroke="rgb(255, 127, 14)"/><path class="markmap-link" data-depth="2" data-path="1.4" d="M470,11.25C510,11.25,510,-766.844,550,-766.844" stroke-width="1.75" stroke="rgb(214, 39, 40)"/><path class="markmap-link" data-depth="2" data-path="1.25" d="M470,11.25C510,11.25,510,-101.562,550,-101.562" stroke-width="1.75" stroke="rgb(148, 103, 189)"/><path class="markmap-link" data-depth="2" data-path="1.27" d="M470,11.25C510,11.25,510,409.469,550,409.469" stroke-width="1.75" stroke="rgb(227, 119, 194)"/><path class="markmap-link" data-depth="2" data-path="1.44" d="M470,11.25C510,11.25,510,1180.594,550,1180.594" stroke-width="1.75" stroke="rgb(214, 39, 40)"/><path class="markmap-link" data-depth="2" data-path="1.53" d="M470,11.25C510,11.25,510,1498.063,550,1498.063" stroke-width="1.75" stroke="rgb(44, 160, 44)"/><g class="markmap-highlight"/><g data-depth="3" data-path="1.2.3" class="markmap-node" transform="translate(752, -1572.1875)"><line stroke="#2ca02c" stroke-width="1.375" x1="-1" x2="1436" y1="170.6875" y2="170.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1418" height="170"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="4,13">
+<thead data-lines="4,5">
+<tr data-lines="4,5">
+<th>File</th>
+<th>Purpose</th>
+<th>Why We Use It</th>
+</tr>
+</thead>
+<tbody data-lines="6,13">
+<tr data-lines="6,7">
+<td><code>.env.example</code></td>
+<td>Template for environment variables</td>
+<td>Secrets never committed to Git. Team members copy to <code>.env</code> and fill in local values.</td>
+</tr>
+<tr data-lines="7,8">
+<td><code>.gitignore</code></td>
+<td>Excludes files from version control</td>
+<td>Prevents <code>.env</code>, <code>__pycache__</code>, <code>node_modules</code>, and model artifacts from being committed.</td>
+</tr>
+<tr data-lines="8,9">
+<td><code>docker-compose.yml</code></td>
+<td>Local development orchestration</td>
+<td>Spins up PostgreSQL, Redis, backend, and frontend with one command. Ensures consistent local environments across team members.</td>
+</tr>
+<tr data-lines="9,10">
+<td><code>docker-compose.monitoring.yml</code></td>
+<td>Observability stack</td>
+<td>Adds Prometheus, Grafana, Alertmanager for local monitoring. Separated from main compose to keep it optional.</td>
+</tr>
+<tr data-lines="10,11">
+<td><code>Makefile</code></td>
+<td>Common command shortcuts</td>
+<td><code>make dev</code>, <code>make test</code>, <code>make deploy</code> abstract complex Docker/CLI commands. Reduces onboarding friction.</td>
+</tr>
+<tr data-lines="11,12">
+<td><code>railway.toml</code></td>
+<td>Railway deployment configuration</td>
+<td>Zero-config deploy to Railway.app. Defines build command, health checks, and restart policy.</td>
+</tr>
+<tr data-lines="12,13">
+<td><code>README.md</code></td>
+<td>Project documentation</td>
+<td>Onboarding guide for new developers. Explains setup, architecture, and deployment.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="2" data-path="1.2" class="markmap-node" transform="translate(550, -1497.1875)"><line stroke="#ff7f0e" stroke-width="1.75" x1="-1" x2="124" y1="20.875" y2="20.875"/><circle stroke-width="1.5" r="6" stroke="#ff7f0e" fill="var(--markmap-circle-open-bg)" cx="122" cy="20.875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="106" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">1. Project Root</div></div></foreignObject></g><g data-depth="4" data-path="1.4.5.6" class="markmap-node" transform="translate(1121, -1390.8125)"><line stroke="#8c564b" stroke-width="1.1875" x1="-1" x2="1398" y1="65.59375" y2="65.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1380" height="65"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="20,24">
+<thead data-lines="20,21">
+<tr data-lines="20,21">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="22,24">
+<tr data-lines="22,23">
+<td><code>app/config.py</code></td>
+<td>Pydantic Settings</td>
+<td>Loads env vars with type validation. <code>settings.DATABASE_URL</code> is used everywhere. Change <code>.env</code> → no code changes needed.</td>
+</tr>
+<tr data-lines="23,24">
+<td><code>app/main.py</code></td>
+<td>FastAPI app factory</td>
+<td>Creates the FastAPI instance, registers middleware, routes, and lifespan hooks. <code>lifespan()</code> loads the ML model at startup and closes DB connections on shutdown.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.5" class="markmap-node" transform="translate(805, -1368.3125)"><line stroke="#9467bd" stroke-width="1.375" x1="-1" x2="238" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#9467bd" fill="var(--markmap-circle-open-bg)" cx="236" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="220" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.1 Configuration &amp; Entry Point</div></div></foreignObject></g><g data-depth="4" data-path="1.4.7.8" class="markmap-node" transform="translate(1043, -1314.625)"><line stroke="#7f7f7f" stroke-width="1.1875" x1="-1" x2="2070" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="2052" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="27,33">
+<thead data-lines="27,28">
+<tr data-lines="27,28">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="29,33">
+<tr data-lines="29,30">
+<td><code>security.py</code></td>
+<td>JWT auth utilities</td>
+<td><code>create_access_token()</code> encodes user_id into JWT. <code>get_current_user()</code> dependency validates Bearer tokens on every protected route. bcrypt hashes passwords with salt.</td>
+</tr>
+<tr data-lines="30,31">
+<td><code>middleware.py</code></td>
+<td>Request interceptors</td>
+<td><code>RequestTimingMiddleware</code> logs method, path, status, and duration for every request. Adds <code>X-Request-ID</code> header for distributed tracing. <code>ErrorHandlingMiddleware</code> catches unhandled exceptions and returns JSON error responses (prevents stack trace leaks).</td>
+</tr>
+<tr data-lines="31,32">
+<td><code>exceptions.py</code></td>
+<td>Custom API exceptions</td>
+<td><code>NotFoundException</code>, <code>ValidationException</code> provide consistent error format with machine-readable <code>code</code> field. Frontend uses <code>code</code> to show appropriate toast notifications.</td>
+</tr>
+<tr data-lines="32,33">
+<td><code>logging.py</code></td>
+<td>Structured JSON logging</td>
+<td><code>JSONFormatter</code> outputs logs as JSON for ELK/Grafana Loki ingestion. Includes <code>request_id</code>, <code>user_id</code>, and <code>duration_ms</code> for traceability.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.7" class="markmap-node" transform="translate(805, -1272.125)"><line stroke="#e377c2" stroke-width="1.375" x1="-1" x2="160" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#e377c2" fill="var(--markmap-circle-open-bg)" cx="158" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="142" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.2 Core (<code>app/core/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.9.10" class="markmap-node" transform="translate(1065, -1196.4375)"><line stroke="#17becf" stroke-width="1.1875" x1="-1" x2="1449" y1="170.59375" y2="170.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1431" height="170"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="36,45">
+<thead data-lines="36,37">
+<tr data-lines="36,37">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="38,45">
+<tr data-lines="38,39">
+<td><code>base.py</code></td>
+<td>SQLAlchemy engine &amp; session</td>
+<td>Creates <code>QueuePool</code> connection pool (reuses DB connections). <code>pool_pre_ping=True</code> verifies connections before use (handles DB restarts gracefully).</td>
+</tr>
+<tr data-lines="39,40">
+<td><code>models/user.py</code></td>
+<td>User dimension table</td>
+<td>Stores signup_date, acquisition_channel, device_type. <code>events</code> relationship enables <code>user.events</code> lazy loading.</td>
+</tr>
+<tr data-lines="40,41">
+<td><code>models/event.py</code></td>
+<td>Events fact table</td>
+<td>Stores 1M+ events. <code>properties</code> is JSONB for flexible metadata. Indexed on <code>(user_id, timestamp)</code> and <code>(event_type, timestamp)</code> for fast analytics queries.</td>
+</tr>
+<tr data-lines="41,42">
+<td><code>models/session.py</code></td>
+<td>Session aggregation</td>
+<td>Pre-aggregated session metrics (duration, page_views). Reduces ML feature computation time.</td>
+</tr>
+<tr data-lines="42,43">
+<td><code>models/experiment.py</code></td>
+<td>Experiment metadata</td>
+<td><code>Experiment</code> table stores hypothesis and status. <code>ExperimentAssignment</code> stores variant assignments with unique constraint on <code>(experiment_id, user_id)</code>.</td>
+</tr>
+<tr data-lines="43,44">
+<td><code>repositories/user_repo.py</code></td>
+<td>User data access</td>
+<td>Repository pattern abstraction. <code>get_by_id()</code>, <code>get_by_channel()</code> methods encapsulate query logic for testability.</td>
+</tr>
+<tr data-lines="44,45">
+<td><code>repositories/event_repo.py</code></td>
+<td>Event data access</td>
+<td><code>get_events_for_user()</code>, <code>get_events_by_type()</code> provide clean interfaces for complex filtered queries.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.9" class="markmap-node" transform="translate(805, -1122.4375)"><line stroke="#bcbd22" stroke-width="1.375" x1="-1" x2="182" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#bcbd22" fill="var(--markmap-circle-open-bg)" cx="180" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="164" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.3 Database (<code>app/db/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.11.12" class="markmap-node" transform="translate(1025, -1015.25)"><line stroke="#ff7f0e" stroke-width="1.1875" x1="-1" x2="1318" y1="170.59375" y2="170.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1300" height="170"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="48,57">
+<thead data-lines="48,49">
+<tr data-lines="48,49">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="50,57">
+<tr data-lines="50,51">
+<td><code>deps.py</code></td>
+<td>Dependency injection</td>
+<td><code>get_db()</code> yields a DB session that auto-closes. <code>get_current_user_id()</code> injects authenticated user ID into routes via FastAPI's <code>Depends()</code>.</td>
+</tr>
+<tr data-lines="51,52">
+<td><code>router.py</code></td>
+<td>Route aggregation</td>
+<td>Collects all v1 routers under <code>/api/v1</code> prefix. Enables API versioning (future <code>/api/v2/</code>).</td>
+</tr>
+<tr data-lines="52,53">
+<td><code>v1/health.py</code></td>
+<td>Health probes</td>
+<td><code>/health/</code> returns 200 for load balancer health checks. <code>/ready</code> verifies DB connectivity before accepting traffic (used by Kubernetes).</td>
+</tr>
+<tr data-lines="53,54">
+<td><code>v1/auth.py</code></td>
+<td>Authentication</td>
+<td><code>/auth/login</code> accepts OAuth2 password flow, returns JWT access + refresh tokens. <code>/auth/refresh</code> exchanges refresh token for new access token.</td>
+</tr>
+<tr data-lines="54,55">
+<td><code>v1/analytics.py</code></td>
+<td>Analytics endpoints</td>
+<td><code>/analytics/metrics</code> → DAU/WAU/MAU. <code>/analytics/funnel</code> → 6-stage conversion. <code>/analytics/cohorts/retention</code> → retention matrix. All use <code>AnalyticsService</code>.</td>
+</tr>
+<tr data-lines="55,56">
+<td><code>v1/experiments.py</code></td>
+<td>A/B test endpoints</td>
+<td><code>/experiments/{id}/assign/{user_id}</code> → deterministic hash assignment. <code>/experiments/{id}/results</code> → Z-test statistical analysis.</td>
+</tr>
+<tr data-lines="56,57">
+<td><code>v1/ml.py</code></td>
+<td>ML endpoints</td>
+<td><code>/ml/churn/predict</code> → batch churn prediction. <code>/ml/churn/user/{id}</code> → single user prediction. Loads XGBoost model at startup.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.11" class="markmap-node" transform="translate(805, -941.25)"><line stroke="#1f77b4" stroke-width="1.375" x1="-1" x2="142" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#1f77b4" fill="var(--markmap-circle-open-bg)" cx="140" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="124" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.4 API (<code>app/api/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.13.14" class="markmap-node" transform="translate(1094, -834.0625)"><line stroke="#d62728" stroke-width="1.1875" x1="-1" x2="1568" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1550" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="60,66">
+<thead data-lines="60,61">
+<tr data-lines="60,61">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="62,66">
+<tr data-lines="62,63">
+<td><code>analytics_service.py</code></td>
+<td>SQL analytics engine</td>
+<td>Contains all raw SQL queries using CTEs and window functions. <code>get_cohort_retention()</code> self-joins users with events by month. <code>get_funnel_analysis()</code> uses CASE-based aggregation.</td>
+</tr>
+<tr data-lines="63,64">
+<td><code>funnel_service.py</code></td>
+<td>Funnel analysis</td>
+<td><code>get_channel_funnel()</code> compares conversion rates across acquisition channels. Enables channel optimization decisions.</td>
+</tr>
+<tr data-lines="64,65">
+<td><code>cohort_service.py</code></td>
+<td>Cohort analysis</td>
+<td><code>get_channel_retention()</code> pivots retention data by channel. Used for "which channel has best retention?" insights.</td>
+</tr>
+<tr data-lines="65,66">
+<td><code>experiment_service.py</code></td>
+<td>Experiment lifecycle</td>
+<td><code>calculate_sample_size()</code> runs power analysis before experiment launch. <code>conclude_experiment()</code> archives results and stops data collection.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.13" class="markmap-node" transform="translate(805, -791.5625)"><line stroke="#2ca02c" stroke-width="1.375" x1="-1" x2="211" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#2ca02c" fill="var(--markmap-circle-open-bg)" cx="209" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="193" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.5 Services (<code>app/services/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.15.16" class="markmap-node" transform="translate(1200, -715.875)"><line stroke="#8c564b" stroke-width="1.1875" x1="-1" x2="1601" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1583" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="69,75">
+<thead data-lines="69,70">
+<tr data-lines="69,70">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="71,75">
+<tr data-lines="71,72">
+<td><code>stats.py</code></td>
+<td>Statistical tests</td>
+<td><code>ABTestAnalyzer.analyze_proportions()</code> runs Z-test via <code>statsmodels</code>. Returns p-value, confidence intervals, and power. <code>required_sample_size()</code> uses <code>NormalIndPower</code> for pre-experiment planning.</td>
+</tr>
+<tr data-lines="72,73">
+<td><code>randomizer.py</code></td>
+<td>Hash-based assignment</td>
+<td><code>assign_variant()</code> uses MD5 hash of <code>experiment_id:user_id</code> to deterministically assign variants. Same inputs always produce same output. No DB lookup required.</td>
+</tr>
+<tr data-lines="73,74">
+<td><code>metrics.py</code></td>
+<td>Metric computation</td>
+<td><code>compute_proportion_metric()</code> counts conversions per variant. Supports custom event types (purchase, signup, etc.).</td>
+</tr>
+<tr data-lines="74,75">
+<td><code>reporter.py</code></td>
+<td>Report generation</td>
+<td><code>generate_summary()</code> creates markdown reports with statistical results for stakeholder communication.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.15" class="markmap-node" transform="translate(805, -673.375)"><line stroke="#9467bd" stroke-width="1.375" x1="-1" x2="317" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#9467bd" fill="var(--markmap-circle-open-bg)" cx="315" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="299" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.6 Experiments Engine (<code>app/experiments/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.17.18" class="markmap-node" transform="translate(1079, -597.6875)"><line stroke="#7f7f7f" stroke-width="1.1875" x1="-1" x2="1745" y1="128.59375" y2="128.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1727" height="128"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="78,85">
+<thead data-lines="78,79">
+<tr data-lines="78,79">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="80,85">
+<tr data-lines="80,81">
+<td><code>features.py</code></td>
+<td>Feature engineering</td>
+<td><code>RFMFeatureEngineer</code> transforms raw user data into Recency, Frequency, Monetary + engagement features. sklearn transformer interface enables pipeline composition.</td>
+</tr>
+<tr data-lines="81,82">
+<td><code>train.py</code></td>
+<td>Model training</td>
+<td><code>ChurnModelTrainer</code> fetches data from PostgreSQL, engineers features, trains 3 models (XGBoost, Random Forest, Logistic Regression), evaluates with 5-fold CV, saves best model as joblib artifact.</td>
+</tr>
+<tr data-lines="82,83">
+<td><code>predict.py</code></td>
+<td>Inference service</td>
+<td><code>ChurnPredictor</code> loads model artifact at startup. <code>predict()</code> fetches user features from DB, engineers them identically to training, returns sorted risk scores. Singleton pattern ensures one model instance.</td>
+</tr>
+<tr data-lines="83,84">
+<td><code>evaluate.py</code></td>
+<td>Model evaluation</td>
+<td><code>evaluate_model()</code> computes AUC-ROC, precision, recall, F1, and confusion matrix. Used for model monitoring and drift detection.</td>
+</tr>
+<tr data-lines="84,85">
+<td><code>artifacts/churn_xgb_v1.joblib</code></td>
+<td>Serialized model</td>
+<td>Contains trained model + feature columns + metadata. Versioned filename enables rollback if new model degrades.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.17" class="markmap-node" transform="translate(805, -544.6875)"><line stroke="#e377c2" stroke-width="1.375" x1="-1" x2="196" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#e377c2" fill="var(--markmap-circle-open-bg)" cx="194" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="178" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.7 ML Pipeline (<code>app/ml/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.19.20" class="markmap-node" transform="translate(1134, -458.5)"><line stroke="#17becf" stroke-width="1.1875" x1="-1" x2="1125" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1107" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="88,94">
+<thead data-lines="88,89">
+<tr data-lines="88,89">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="90,94">
+<tr data-lines="90,91">
+<td><code>queries/retention.sql</code></td>
+<td>Cohort retention query</td>
+<td>Self-join pattern with <code>DATE_TRUNC('month', ...)</code> groups users by signup month and counts retained users per period.</td>
+</tr>
+<tr data-lines="91,92">
+<td><code>queries/funnel.sql</code></td>
+<td>Funnel query</td>
+<td><code>CASE WHEN</code> aggregation with <code>MAX()</code> handles multiple events per user. Computes drop-off between each stage.</td>
+</tr>
+<tr data-lines="92,93">
+<td><code>queries/metrics.sql</code></td>
+<td>DAU/WAU/MAU query</td>
+<td>Conditional <code>COUNT(DISTINCT)</code> in single pass. Computes stickiness as <code>DAU/MAU</code> ratio.</td>
+</tr>
+<tr data-lines="93,94">
+<td><code>executor.py</code></td>
+<td>SQL runner</td>
+<td><code>execute_query()</code> loads SQL files and renders them with Jinja2 templating. Separates SQL from Python code.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.19" class="markmap-node" transform="translate(805, -416)"><line stroke="#bcbd22" stroke-width="1.375" x1="-1" x2="251" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#bcbd22" fill="var(--markmap-circle-open-bg)" cx="249" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="233" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.8 Analytics SQL (<code>app/analytics/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.21.22" class="markmap-node" transform="translate(1104, -340.3125)"><line stroke="#ff7f0e" stroke-width="1.1875" x1="-1" x2="1168" y1="86.59375" y2="86.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1150" height="86"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="97,102">
+<thead data-lines="97,98">
+<tr data-lines="97,98">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="99,102">
+<tr data-lines="99,100">
+<td><code>user.py</code></td>
+<td>User Pydantic models</td>
+<td><code>UserCreate</code> validates incoming data. <code>UserResponse</code> defines API output shape. <code>from_attributes=True</code> enables ORM mode.</td>
+</tr>
+<tr data-lines="100,101">
+<td><code>analytics.py</code></td>
+<td>Analytics Pydantic models</td>
+<td><code>FunnelResponse</code>, <code>CohortResponse</code> type the API responses. Frontend TypeScript types can be auto-generated from these.</td>
+</tr>
+<tr data-lines="101,102">
+<td><code>experiment.py</code></td>
+<td>Experiment Pydantic models</td>
+<td><code>ExperimentCreate</code> validates <code>metric_type</code> against allowed values. <code>ABTestAnalysis</code> structures statistical results.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.21" class="markmap-node" transform="translate(805, -308.3125)"><line stroke="#1f77b4" stroke-width="1.375" x1="-1" x2="221" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#1f77b4" fill="var(--markmap-circle-open-bg)" cx="219" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="203" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.9 Schemas (<code>app/schemas/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.4.23.24" class="markmap-node" transform="translate(1029, -243.125)"><line stroke="#d62728" stroke-width="1.1875" x1="-1" x2="1307" y1="86.59375" y2="86.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1289" height="86"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="105,110">
+<thead data-lines="105,106">
+<tr data-lines="105,106">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="107,110">
+<tr data-lines="107,108">
+<td><code>conftest.py</code></td>
+<td>Pytest fixtures</td>
+<td><code>db_engine</code> creates in-memory SQLite. <code>db_session</code> provides isolated transactions (rolled back after each test). <code>client</code> provides HTTP test client.</td>
+</tr>
+<tr data-lines="108,109">
+<td><code>unit/test_experiments.py</code></td>
+<td>Stats unit tests</td>
+<td>Verifies Z-test produces significant results for known data (324/1000 vs 365/1000). Verifies sample size calculations return reasonable values.</td>
+</tr>
+<tr data-lines="109,110">
+<td><code>unit/test_randomizer.py</code></td>
+<td>Randomizer tests</td>
+<td>Verifies deterministic assignment (same input → same output). Verifies even distribution across 10,000 assignments.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.4.23" class="markmap-node" transform="translate(805, -211.125)"><line stroke="#2ca02c" stroke-width="1.375" x1="-1" x2="146" y1="22.6875" y2="22.6875"/><circle stroke-width="1.5" r="6" stroke="#2ca02c" fill="var(--markmap-circle-open-bg)" cx="144" cy="22.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="128" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2.10 Tests (<code>tests/</code>)</div></div></foreignObject></g><g data-depth="2" data-path="1.4" class="markmap-node" transform="translate(550, -789.71875)"><line stroke="#d62728" stroke-width="1.75" x1="-1" x2="177" y1="22.875" y2="22.875"/><circle stroke-width="1.5" r="6" stroke="#d62728" fill="var(--markmap-circle-open-bg)" cx="175" cy="22.875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="159" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">2. Backend (<code>backend/</code>)</div></div></foreignObject></g><g data-depth="3" data-path="1.25.26" class="markmap-node" transform="translate(892, -145.9375)"><line stroke="#8c564b" stroke-width="1.375" x1="-1" x2="1563" y1="65.6875" y2="65.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1545" height="65"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="115,119">
+<thead data-lines="115,116">
+<tr data-lines="115,116">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="117,119">
+<tr data-lines="117,118">
+<td><code>seed.py</code></td>
+<td>Synthetic data generation</td>
+<td>Generates 50K users with channel-biased retention and 1.2M events with realistic funnel drop-offs. Uses NumPy vectorization for speed. Seeds database via SQLAlchemy bulk insert.</td>
+</tr>
+<tr data-lines="118,119">
+<td><code>Dockerfile</code></td>
+<td>Generator container</td>
+<td>Standalone container for data seeding. Runs once via <code>docker compose --profile seed up</code>.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="2" data-path="1.25" class="markmap-node" transform="translate(550, -124.4375)"><line stroke="#9467bd" stroke-width="1.75" x1="-1" x2="264" y1="22.875" y2="22.875"/><circle stroke-width="1.5" r="6" stroke="#9467bd" fill="var(--markmap-circle-open-bg)" cx="262" cy="22.875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="246" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">3. Data Generator (<code>data-generator/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.27.28.29" class="markmap-node" transform="translate(974, -69.5625)"><line stroke="#bcbd22" stroke-width="1.1875" x1="-1" x2="1032" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1014" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="126,132">
+<thead data-lines="126,127">
+<tr data-lines="126,127">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="128,132">
+<tr data-lines="128,129">
+<td><code>package.json</code></td>
+<td>Node dependencies</td>
+<td>React 18, TypeScript, Vite, TanStack Query, Recharts, Tailwind, Zustand, Axios.</td>
+</tr>
+<tr data-lines="129,130">
+<td><code>vite.config.ts</code></td>
+<td>Build tool config</td>
+<td>Path alias <code>@/</code> → <code>./src/</code>. Proxy <code>/api</code> to <code>localhost:8000</code> for dev. Code splitting into vendor/charts/query chunks.</td>
+</tr>
+<tr data-lines="130,131">
+<td><code>tsconfig.json</code></td>
+<td>TypeScript config</td>
+<td>Strict mode enabled. Path mapping for clean imports.</td>
+</tr>
+<tr data-lines="131,132">
+<td><code>tailwind.config.js</code></td>
+<td>Design tokens</td>
+<td>Custom color palette (CSS variables), border radius, font family. Dark mode via <code>class</code> strategy.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.28" class="markmap-node" transform="translate(805, -26.0625)"><line stroke="#7f7f7f" stroke-width="1.375" x1="-1" x2="91" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#7f7f7f" fill="var(--markmap-circle-open-bg)" cx="89" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="73" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.1 Config</div></div></foreignObject></g><g data-depth="4" data-path="1.27.30.31" class="markmap-node" transform="translate(962, 48.625)"><line stroke="#1f77b4" stroke-width="1.1875" x1="-1" x2="1097" y1="149.59375" y2="149.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1079" height="149"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="135,143">
+<thead data-lines="135,136">
+<tr data-lines="135,136">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="137,143">
+<tr data-lines="137,138">
+<td><code>src/main.tsx</code></td>
+<td>Entry point</td>
+<td>Creates React root, wraps app in QueryClientProvider and BrowserRouter.</td>
+</tr>
+<tr data-lines="138,139">
+<td><code>src/App.tsx</code></td>
+<td>Root component</td>
+<td>Layout shell with Sidebar, Header, and Routes.</td>
+</tr>
+<tr data-lines="139,140">
+<td><code>src/index.css</code></td>
+<td>Global styles</td>
+<td>Tailwind directives, CSS variables for theming, custom scrollbar, heatmap hover effects, skeleton shimmer animation.</td>
+</tr>
+<tr data-lines="140,141">
+<td><code>src/lib/utils.ts</code></td>
+<td>Utility functions</td>
+<td><code>cn()</code> merges Tailwind classes with <code>tailwind-merge</code> (prevents class conflicts).</td>
+</tr>
+<tr data-lines="141,142">
+<td><code>src/lib/formatters.ts</code></td>
+<td>Data formatters</td>
+<td><code>formatNumber()</code>, <code>formatPercent()</code>, <code>formatCurrency()</code>, <code>formatDate()</code>, <code>formatDuration()</code>. Centralized formatting for consistency.</td>
+</tr>
+<tr data-lines="142,143">
+<td><code>src/lib/constants.ts</code></td>
+<td>App constants</td>
+<td>Risk thresholds, funnel stage names, channel colors. Changing a threshold here updates the entire UI.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.30" class="markmap-node" transform="translate(805, 113.125)"><line stroke="#17becf" stroke-width="1.375" x1="-1" x2="79" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#17becf" fill="var(--markmap-circle-open-bg)" cx="77" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="61" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.2 Core</div></div></foreignObject></g><g data-depth="4" data-path="1.27.32.33" class="markmap-node" transform="translate(1063, 208.8125)"><line stroke="#2ca02c" stroke-width="1.1875" x1="-1" x2="1132" y1="65.59375" y2="65.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1114" height="65"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="146,150">
+<thead data-lines="146,147">
+<tr data-lines="146,147">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="148,150">
+<tr data-lines="148,149">
+<td><code>src/store/authStore.ts</code></td>
+<td>Auth state (Zustand)</td>
+<td>Stores JWT token in memory + localStorage. <code>isAuthenticated</code> derived from token presence. <code>logout()</code> clears everything.</td>
+</tr>
+<tr data-lines="149,150">
+<td><code>src/store/uiStore.ts</code></td>
+<td>UI state (Zustand)</td>
+<td>Sidebar collapse state, theme preference, toast notifications. Lightweight alternative to Redux.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.32" class="markmap-node" transform="translate(805, 231.3125)"><line stroke="#ff7f0e" stroke-width="1.375" x1="-1" x2="180" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#ff7f0e" fill="var(--markmap-circle-open-bg)" cx="178" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="162" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.3 State Management</div></div></foreignObject></g><g data-depth="4" data-path="1.27.34.35" class="markmap-node" transform="translate(997, 285)"><line stroke="#9467bd" stroke-width="1.1875" x1="-1" x2="1094" y1="86.59375" y2="86.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1076" height="86"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="153,158">
+<thead data-lines="153,154">
+<tr data-lines="153,154">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="155,158">
+<tr data-lines="155,156">
+<td><code>src/services/api.ts</code></td>
+<td>Axios instance</td>
+<td>Base URL, request interceptor adds JWT header, response interceptor handles 401 redirects.</td>
+</tr>
+<tr data-lines="156,157">
+<td><code>src/services/analyticsApi.ts</code></td>
+<td>Analytics API client</td>
+<td>Typed methods for metrics, funnel, cohorts, revenue endpoints. Uses TanStack Query keys for caching.</td>
+</tr>
+<tr data-lines="157,158">
+<td><code>src/services/experimentApi.ts</code></td>
+<td>Experiment API client</td>
+<td><code>getResults()</code>, <code>assignVariant()</code> methods with proper TypeScript return types.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.34" class="markmap-node" transform="translate(805, 318)"><line stroke="#d62728" stroke-width="1.375" x1="-1" x2="114" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#d62728" fill="var(--markmap-circle-open-bg)" cx="112" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="96" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.4 API Layer</div></div></foreignObject></g><g data-depth="4" data-path="1.27.36.37" class="markmap-node" transform="translate(973, 382.1875)"><line stroke="#e377c2" stroke-width="1.1875" x1="-1" x2="1026" y1="86.59375" y2="86.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1008" height="86"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="161,166">
+<thead data-lines="161,162">
+<tr data-lines="161,162">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="163,166">
+<tr data-lines="163,164">
+<td><code>src/hooks/useAnalytics.ts</code></td>
+<td>Analytics data fetching</td>
+<td><code>useMetrics()</code>, <code>useFunnel()</code>, <code>useCohortRetention()</code> wrap TanStack Query with 5-minute stale time.</td>
+</tr>
+<tr data-lines="164,165">
+<td><code>src/hooks/useAuth.ts</code></td>
+<td>Auth operations</td>
+<td><code>useLogin()</code>, <code>useLogout()</code> mutations. Handles token storage and cache invalidation.</td>
+</tr>
+<tr data-lines="165,166">
+<td><code>src/hooks/useExperiments.ts</code></td>
+<td>Experiment data</td>
+<td><code>useExperimentResults()</code> fetches and caches A/B test analysis.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.36" class="markmap-node" transform="translate(805, 415.1875)"><line stroke="#8c564b" stroke-width="1.375" x1="-1" x2="90" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#8c564b" fill="var(--markmap-circle-open-bg)" cx="88" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="72" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.5 Hooks</div></div></foreignObject></g><g data-depth="4" data-path="1.27.38.39" class="markmap-node" transform="translate(970, 479.375)"><line stroke="#bcbd22" stroke-width="1.1875" x1="-1" x2="1050" y1="65.59375" y2="65.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1032" height="65"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="169,173">
+<thead data-lines="169,170">
+<tr data-lines="169,170">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="171,173">
+<tr data-lines="171,172">
+<td><code>src/types/analytics.d.ts</code></td>
+<td>Analytics TypeScript types</td>
+<td>Interfaces for API responses: <code>MetricsResponse</code>, <code>FunnelStage</code>, <code>CohortResponse</code>, <code>ChurnPrediction</code>.</td>
+</tr>
+<tr data-lines="172,173">
+<td><code>src/types/experiment.d.ts</code></td>
+<td>Experiment TypeScript types</td>
+<td><code>ExperimentResult</code>, <code>ABTestAnalysis</code> interfaces ensure type safety across frontend.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.38" class="markmap-node" transform="translate(805, 501.875)"><line stroke="#7f7f7f" stroke-width="1.375" x1="-1" x2="87" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#7f7f7f" fill="var(--markmap-circle-open-bg)" cx="85" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="69" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.6 Types</div></div></foreignObject></g><g data-depth="4" data-path="1.27.40.41" class="markmap-node" transform="translate(1018, 555.5625)"><line stroke="#1f77b4" stroke-width="1.1875" x1="-1" x2="1222" y1="170.59375" y2="170.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1204" height="170"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="176,185">
+<thead data-lines="176,177">
+<tr data-lines="176,177">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="178,185">
+<tr data-lines="178,179">
+<td><code>components/layout/Sidebar.tsx</code></td>
+<td>Navigation sidebar</td>
+<td>Responsive sidebar with nav links, active state styling, system status indicator.</td>
+</tr>
+<tr data-lines="179,180">
+<td><code>components/layout/Header.tsx</code></td>
+<td>Top bar</td>
+<td>Search input, notification bell with unread indicator, user profile dropdown.</td>
+</tr>
+<tr data-lines="180,181">
+<td><code>components/ui/Skeleton.tsx</code></td>
+<td>Loading placeholder</td>
+<td><code>animate-pulse</code> div with configurable dimensions. Matches content shape to reduce layout shift.</td>
+</tr>
+<tr data-lines="181,182">
+<td><code>components/charts/MetricCard.tsx</code></td>
+<td>KPI card</td>
+<td>Displays value, trend arrow, and percentage change. Color-coded for positive/negative trends.</td>
+</tr>
+<tr data-lines="182,183">
+<td><code>components/charts/RetentionHeatmap.tsx</code></td>
+<td>Cohort heatmap</td>
+<td>Grid of colored cells representing retention rates. Hover tooltip shows exact percentage. Legend for color scale.</td>
+</tr>
+<tr data-lines="183,184">
+<td><code>components/charts/FunnelChart.tsx</code></td>
+<td>Funnel visualization</td>
+<td>Horizontal bar chart via Recharts. Shows users per stage and drop-off percentages.</td>
+</tr>
+<tr data-lines="184,185">
+<td><code>components/charts/MetricSparkline.tsx</code></td>
+<td>Mini trend chart</td>
+<td>Small line chart for dashboard cards. Shows 7-day trend without axis labels.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.40" class="markmap-node" transform="translate(805, 630.5625)"><line stroke="#17becf" stroke-width="1.375" x1="-1" x2="135" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#17becf" fill="var(--markmap-circle-open-bg)" cx="133" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="117" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.7 Components</div></div></foreignObject></g><g data-depth="4" data-path="1.27.42.43" class="markmap-node" transform="translate(973, 736.75)"><line stroke="#2ca02c" stroke-width="1.1875" x1="-1" x2="1358" y1="149.59375" y2="149.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1340" height="149"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="188,196">
+<thead data-lines="188,189">
+<tr data-lines="188,189">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="190,196">
+<tr data-lines="190,191">
+<td><code>pages/Dashboard.tsx</code></td>
+<td>Main dashboard</td>
+<td>4 KPI cards + retention heatmap + funnel chart. Uses <code>useMetrics</code>, <code>useFunnel</code>, <code>useCohortRetention</code> hooks. Shows skeleton loaders during data fetch.</td>
+</tr>
+<tr data-lines="191,192">
+<td><code>pages/CohortAnalysis.tsx</code></td>
+<td>Cohort deep dive</td>
+<td>Full-page retention heatmap + channel comparison cards. Best/worst channel identification.</td>
+</tr>
+<tr data-lines="192,193">
+<td><code>pages/FunnelAnalysis.tsx</code></td>
+<td>Funnel diagnostics</td>
+<td>Funnel chart + critical insight alert card. Identifies highest drop-off stage with recommendation.</td>
+</tr>
+<tr data-lines="193,194">
+<td><code>pages/ChurnPrediction.tsx</code></td>
+<td>ML predictions</td>
+<td>Summary cards (total scored, high risk, at-risk revenue) + sortable predictions table with risk level badges and probability bars.</td>
+</tr>
+<tr data-lines="194,195">
+<td><code>pages/Experiments.tsx</code></td>
+<td>A/B test results</td>
+<td>Control vs Treatment comparison cards. Statistical metrics (lift, p-value, power, significance). Recommendation banner with color coding.</td>
+</tr>
+<tr data-lines="195,196">
+<td><code>pages/Settings.tsx</code></td>
+<td>App settings</td>
+<td>Theme toggle, notification preferences, API key management.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.27.42" class="markmap-node" transform="translate(805, 801.25)"><line stroke="#ff7f0e" stroke-width="1.375" x1="-1" x2="90" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#ff7f0e" fill="var(--markmap-circle-open-bg)" cx="88" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="72" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4.8 Pages</div></div></foreignObject></g><g data-depth="2" data-path="1.27" class="markmap-node" transform="translate(550, 386.59375)"><line stroke="#e377c2" stroke-width="1.75" x1="-1" x2="177" y1="22.875" y2="22.875"/><circle stroke-width="1.5" r="6" stroke="#e377c2" fill="var(--markmap-circle-open-bg)" cx="175" cy="22.875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="159" height="22"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">4. Frontend (<code>frontend/</code>)</div></div></foreignObject></g><g data-depth="4" data-path="1.44.45.46" class="markmap-node" transform="translate(931, 896.9375)"><line stroke="#8c564b" stroke-width="1.1875" x1="-1" x2="1273" y1="149.59375" y2="149.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1255" height="149"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="203,211">
+<thead data-lines="203,204">
+<tr data-lines="203,204">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="205,211">
+<tr data-lines="205,206">
+<td><code>backend/Dockerfile</code></td>
+<td>Backend container</td>
+<td>Multi-stage build: deps → runtime. Non-root user for security. Gunicorn with Uvicorn workers for production ASGI serving.</td>
+</tr>
+<tr data-lines="206,207">
+<td><code>frontend/Dockerfile</code></td>
+<td>Frontend container</td>
+<td>Multi-stage: Node build → Nginx serve. Security headers (X-Frame-Options, CSP). Gzip compression.</td>
+</tr>
+<tr data-lines="207,208">
+<td><code>data-generator/Dockerfile</code></td>
+<td>Seed container</td>
+<td>Runs <code>seed.py</code> once and exits. Used with Docker Compose profiles.</td>
+</tr>
+<tr data-lines="208,209">
+<td><code>infrastructure/docker/Dockerfile.backend</code></td>
+<td>Optimized backend</td>
+<td>Production-optimized with health checks, read-only filesystem, and security scanning.</td>
+</tr>
+<tr data-lines="209,210">
+<td><code>infrastructure/docker/Dockerfile.frontend</code></td>
+<td>Optimized frontend</td>
+<td>Nginx with hardened security headers and static asset caching.</td>
+</tr>
+<tr data-lines="210,211">
+<td><code>infrastructure/docker/nginx.conf</code></td>
+<td>Reverse proxy</td>
+<td>Routes <code>/api/</code> to backend, <code>/ws/</code> to WebSocket, serves static files, SPA fallback to index.html.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.44.45" class="markmap-node" transform="translate(758, 961.4375)"><line stroke="#9467bd" stroke-width="1.375" x1="-1" x2="95" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#9467bd" fill="var(--markmap-circle-open-bg)" cx="93" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="77" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">5.1 Docker</div></div></foreignObject></g><g data-depth="4" data-path="1.44.47.48" class="markmap-node" transform="translate(1000, 1057.125)"><line stroke="#7f7f7f" stroke-width="1.1875" x1="-1" x2="1241" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1223" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="214,220">
+<thead data-lines="214,215">
+<tr data-lines="214,215">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="216,220">
+<tr data-lines="216,217">
+<td><code>infrastructure/terraform/main.tf</code></td>
+<td>AWS infrastructure</td>
+<td>VPC, ECS Fargate, RDS PostgreSQL, ElastiCache Redis, ALB, Route53, ACM SSL. Auto-scaling based on CPU/memory.</td>
+</tr>
+<tr data-lines="217,218">
+<td><code>infrastructure/terraform/variables.tf</code></td>
+<td>Input variables</td>
+<td>Environment-specific values (instance sizes, domain name, secrets). Validated with constraints.</td>
+</tr>
+<tr data-lines="218,219">
+<td><code>infrastructure/terraform/iam.tf</code></td>
+<td>IAM roles</td>
+<td>ECS task execution role, task role, RDS monitoring role. Least-privilege permissions.</td>
+</tr>
+<tr data-lines="219,220">
+<td><code>infrastructure/terraform/outputs.tf</code></td>
+<td>Output values</td>
+<td>ALB DNS, RDS endpoint, Redis endpoint, ECR URL. Displayed after <code>terraform apply</code>.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.44.47" class="markmap-node" transform="translate(758, 1100.625)"><line stroke="#e377c2" stroke-width="1.375" x1="-1" x2="164" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#e377c2" fill="var(--markmap-circle-open-bg)" cx="162" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="146" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">5.2 Terraform (AWS)</div></div></foreignObject></g><g data-depth="4" data-path="1.44.49.50" class="markmap-node" transform="translate(924, 1175.3125)"><line stroke="#17becf" stroke-width="1.1875" x1="-1" x2="1300" y1="107.59375" y2="107.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1282" height="107"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="223,229">
+<thead data-lines="223,224">
+<tr data-lines="223,224">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="225,229">
+<tr data-lines="225,226">
+<td><code>.github/workflows/ci-backend.yml</code></td>
+<td>Backend CI</td>
+<td>Runs on PR/push. Steps: lint (flake8), type check (mypy), security scan (bandit), unit tests (pytest), coverage upload (Codecov).</td>
+</tr>
+<tr data-lines="226,227">
+<td><code>.github/workflows/ci-frontend.yml</code></td>
+<td>Frontend CI</td>
+<td>Runs on PR/push. Steps: <code>npm ci</code>, <code>npm run lint</code>, TypeScript check, production build.</td>
+</tr>
+<tr data-lines="227,228">
+<td><code>.github/workflows/deploy-aws.yml</code></td>
+<td>AWS deployment</td>
+<td>Triggered on main branch merge. Builds Docker image, pushes to ECR, updates ECS task definition, deploys service.</td>
+</tr>
+<tr data-lines="228,229">
+<td><code>.github/workflows/deploy-railway.yml</code></td>
+<td>Railway deployment</td>
+<td>Triggered on main branch. Uses Railway CLI for zero-downtime deploy.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.44.49" class="markmap-node" transform="translate(758, 1218.8125)"><line stroke="#bcbd22" stroke-width="1.375" x1="-1" x2="88" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#bcbd22" fill="var(--markmap-circle-open-bg)" cx="86" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="70" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">5.3 CI/CD</div></div></foreignObject></g><g data-depth="4" data-path="1.44.51.52" class="markmap-node" transform="translate(955, 1293.5)"><line stroke="#ff7f0e" stroke-width="1.1875" x1="-1" x2="1309" y1="149.59375" y2="149.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="1291" height="149"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><table data-lines="232,240">
+<thead data-lines="232,233">
+<tr data-lines="232,233">
+<th>File</th>
+<th>Purpose</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody data-lines="234,240">
+<tr data-lines="234,235">
+<td><code>monitoring/prometheus/prometheus.yml</code></td>
+<td>Scraping config</td>
+<td>Defines targets: backend <code>/metrics</code>, node-exporter, postgres-exporter, redis-exporter. 15s scrape interval.</td>
+</tr>
+<tr data-lines="235,236">
+<td><code>monitoring/prometheus/rules/alerts.yml</code></td>
+<td>Alert rules</td>
+<td>Critical alerts: HighErrorRate (&gt;5%), HighLatency (&gt;500ms), ModelDegradation (AUC&lt;0.75), ServiceDown.</td>
+</tr>
+<tr data-lines="236,237">
+<td><code>monitoring/alertmanager/config.yml</code></td>
+<td>Alert routing</td>
+<td>Routes critical alerts to PagerDuty, warnings to Slack. Email fallback for all alerts.</td>
+</tr>
+<tr data-lines="237,238">
+<td><code>monitoring/grafana/provisioning/datasources/datasources.yml</code></td>
+<td>Data source config</td>
+<td>Auto-registers Prometheus as default data source on Grafana startup.</td>
+</tr>
+<tr data-lines="238,239">
+<td><code>monitoring/grafana/provisioning/dashboards/dashboards.yml</code></td>
+<td>Dashboard provider</td>
+<td>Auto-loads dashboard JSON files from <code>/var/lib/grafana/dashboards</code>.</td>
+</tr>
+<tr data-lines="239,240">
+<td><code>monitoring/grafana/dashboards/overview.json</code></td>
+<td>Main dashboard</td>
+<td>Availability, request rate, latency percentiles (p50/p95/p99), active users, revenue by channel.</td>
+</tr>
+</tbody>
+</table></div></div></foreignObject></g><g data-depth="3" data-path="1.44.51" class="markmap-node" transform="translate(758, 1358)"><line stroke="#1f77b4" stroke-width="1.375" x1="-1" x2="119" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#1f77b4" fill="var(--markmap-circle-open-bg)" cx="117" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="101" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">5.4 Monitoring</div></div></foreignObject></g><g data-depth="2" data-path="1.44" class="markmap-node" transform="translate(550, 1159.71875)"><line stroke="#d62728" stroke-width="1.75" x1="-1" x2="130" y1="20.875" y2="20.875"/><circle stroke-width="1.5" r="6" stroke="#d62728" fill="var(--markmap-circle-open-bg)" cx="128" cy="20.875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="112" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">5. Infrastructure</div></div></foreignObject></g><g data-depth="4" data-path="1.53.54.55" class="markmap-node" transform="translate(1044, 1453.6875)"><line stroke="#9467bd" stroke-width="1.1875" x1="-1" x2="319" y1="67.59375" y2="67.59375"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="301" height="67"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><pre data-lines="246,250"><code class="language-bash">make reset          <span class="hljs-comment"># Full reset: DB + seed + train</span>
+make dev            <span class="hljs-comment"># Start backend</span>
+make dev-front      <span class="hljs-comment"># Start frontend</span></code></pre></div></div></foreignObject></g><g data-depth="3" data-path="1.53.54" class="markmap-node" transform="translate(811, 1477.1875)"><line stroke="#d62728" stroke-width="1.375" x1="-1" x2="155" y1="20.6875" y2="20.6875"/><circle stroke-width="1.5" r="6" stroke="#d62728" fill="var(--markmap-circle-open-bg)" cx="153" cy="20.6875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="137" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">Local Development</div></div></foreignObject></g><g data-depth="2" data-path="1.53" class="markmap-node" transform="translate(550, 1477.1875)"><line stroke="#2ca02c" stroke-width="1.75" x1="-1" x2="183" y1="20.875" y2="20.875"/><circle stroke-width="1.5" r="6" stroke="#2ca02c" fill="var(--markmap-circle-open-bg)" cx="181" cy="20.875"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="165" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">6. Operations Runbook</div></div></foreignObject></g><g data-depth="1" data-path="1" class="markmap-node" transform="translate(0, -10)"><line stroke="#1f77b4" stroke-width="2.5" x1="-1" x2="472" y1="21.25" y2="21.25"/><circle stroke-width="1.5" r="6" stroke="#1f77b4" fill="var(--markmap-circle-open-bg)" cx="470" cy="21.25"/><foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="454" height="20"><div xmlns="http://www.w3.org/1999/xhtml"><div xmlns="http://www.w3.org/1999/xhtml">Retention Analytics Platform — Complete File Operations Guide</div></div></foreignObject></g></g></svg>
