@@ -1,0 +1,8 @@
+# Production deployment is defined in deploy-production.yml.
+name: AWS Deploy Compatibility
+on: {workflow_dispatch: {}}
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Use deploy-production.yml for the full AWS deployment."

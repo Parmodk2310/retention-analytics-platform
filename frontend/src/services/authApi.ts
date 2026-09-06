@@ -1,0 +1,1 @@
+import {api} from './api';export const authApi={login:async(email:string,password:string)=>(await api.post('/auth/login',{email,password})).data,register:async(email:string,password:string,full_name:string)=>(await api.post('/auth/register',{email,password,full_name})).data,logout:async()=>api.post('/auth/logout')}

@@ -1,0 +1,6 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.analytics.executor import execute_query
+async def overview(db:AsyncSession,days:int=30)->dict: return (await execute_query(db,"overview",{"days":days}))[0]
+async def activity(db:AsyncSession,days:int=30)->list[dict]: return await execute_query(db,"activity",{"days":days})
+async def revenue(db:AsyncSession,months:int=12)->list[dict]: return await execute_query(db,"revenue",{"months":months})
+async def channels(db:AsyncSession,days:int=30)->list[dict]: return await execute_query(db,"channel_performance",{"days":days})

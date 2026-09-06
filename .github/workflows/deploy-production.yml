@@ -1,0 +1,45 @@
+name: Deploy Production AWS
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  id-token: write
+concurrency: {group: production, cancel-in-progress: false}
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push backend
+        env:
+          REPO: ${{ vars.BACKEND_ECR_REPOSITORY }}
+        run: |
+          ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+          REGISTRY="$ACCOUNT.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
+          docker build -t "$REGISTRY/$REPO:${GITHUB_SHA}" -t "$REGISTRY/$REPO:latest" backend
+          docker push "$REGISTRY/$REPO:${GITHUB_SHA}"
+          docker push "$REGISTRY/$REPO:latest"
+      - name: Force ECS rollout
+        run: aws ecs update-service --cluster "${{ vars.ECS_CLUSTER }}" --service "${{ vars.ECS_SERVICE }}" --force-new-deployment
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - working-directory: frontend
+        run: npm install && npm run build
+        env: {VITE_API_BASE_URL: /api/v1}
+      - run: aws s3 sync frontend/dist "s3://${{ vars.FRONTEND_BUCKET }}" --delete
+      - run: aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths '/*'

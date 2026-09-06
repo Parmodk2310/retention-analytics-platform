@@ -1,0 +1,1 @@
+import {Line,LineChart,ResponsiveContainer} from 'recharts';export function MetricSparkline({data}:{data:{value:number}[]}){return <div className="h-10 w-24"><ResponsiveContainer><LineChart data={data}><Line dataKey="value" dot={false} stroke="currentColor"/></LineChart></ResponsiveContainer></div>}

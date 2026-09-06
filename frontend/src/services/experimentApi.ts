@@ -1,0 +1,1 @@
+import {api} from './api';export const experimentApi={list:async()=>(await api.get('/experiments')).data,create:async(payload:unknown)=>(await api.post('/experiments',payload)).data,results:async(id:string)=>(await api.get(`/experiments/${id}/results`)).data}

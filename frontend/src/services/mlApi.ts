@@ -1,0 +1,1 @@
+import {api} from './api';export const mlApi={scores:async(params?:{limit?:number;risk_band?:string})=>(await api.get('/churn/scores',{params})).data,modelHealth:async()=>(await api.get('/churn/model-health')).data}

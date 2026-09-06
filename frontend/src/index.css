@@ -1,0 +1,4 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+:root{--background:222 47% 97%;--foreground:222 47% 11%;--card:0 0% 100%;--border:216 20% 90%;--primary:215 100% 55%;--muted:215 25% 92%;--success:156 72% 40%;--warning:38 92% 50%;--danger:350 89% 60%;--radius:.9rem;color-scheme:light}
+.dark{--background:222 47% 6%;--foreground:213 31% 91%;--card:221 39% 10%;--border:217 25% 18%;--primary:213 100% 63%;--muted:217 25% 15%;--success:160 84% 45%;--warning:42 96% 56%;--danger:348 83% 63%;color-scheme:dark}
+*{border-color:hsl(var(--border))}html{font-family:Inter,ui-sans-serif,system-ui,sans-serif}body{margin:0;background:hsl(var(--background));color:hsl(var(--foreground));min-width:320px}button,input,select{font:inherit}.focus-ring{outline:none}.focus-ring:focus-visible{box-shadow:0 0 0 3px hsl(var(--primary)/.3)}

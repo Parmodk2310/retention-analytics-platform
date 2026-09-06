@@ -1,0 +1,1 @@
+import {Outlet} from 'react-router-dom';import {Sidebar} from './Sidebar';import {Header} from './Header';export function AppShell(){return <div className="flex min-h-screen"><Sidebar/><div className="min-w-0 flex-1"><Header/><main className="p-5 lg:p-7"><Outlet/></main></div></div>}

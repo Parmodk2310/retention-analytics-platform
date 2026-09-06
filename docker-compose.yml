@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: retention
+      POSTGRES_USER: retention
+      POSTGRES_PASSWORD: retention
+    ports: ["5432:5432"]
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U retention -d retention"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://retention:retention@postgres:5432/retention
+      DATABASE_URL_SYNC: postgresql+psycopg://retention:retention@postgres:5432/retention
+      REDIS_URL: redis://redis:6379/0
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    volumes:
+      - ./backend/app/ml/artifacts:/app/app/ml/artifacts
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api/v1
+    ports: ["8080:8080"]
+    depends_on: [backend]
+
+  data-generator:
+    build: ./data-generator
+    env_file: .env
+    environment:
+      DATABASE_URL_SYNC: postgresql+psycopg://retention:retention@postgres:5432/retention
+    depends_on:
+      postgres: {condition: service_healthy}
+    profiles: [tools]
+
+volumes:
+  postgres-data:
+  redis-data:
