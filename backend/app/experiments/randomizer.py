@@ -1,5 +1,6 @@
 import hashlib
 
+
 def assign_variant(user_id: str, experiment_id: str, variants: list[str]) -> str:
     """
     Deterministic hash-based assignment ensures:
@@ -11,7 +12,7 @@ def assign_variant(user_id: str, experiment_id: str, variants: list[str]) -> str
     hash_value = int(hashlib.md5(hash_input.encode()).hexdigest(), 16)
     bucket = hash_value % 100
     split_points = [100 // len(variants) * (i + 1) for i in range(len(variants) - 1)]
-    
+
     for i, point in enumerate(split_points):
         if bucket < point:
             return variants[i]

@@ -9,7 +9,9 @@ def add_funnel_rates(rows: list[dict]) -> list[dict]:
 
     for row in rows:
         users = int(row["users"])
-        conversion = 1.0 if previous_users is None else (users / previous_users if previous_users else 0.0)
+        conversion = (
+            1.0 if previous_users is None else (users / previous_users if previous_users else 0.0)
+        )
         dropoff = 0.0 if previous_users is None else 1.0 - conversion
         output.append(
             {
