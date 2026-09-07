@@ -14,9 +14,14 @@ SELECT
     COUNT(DISTINCT e.user_id)::int AS purchasers,
     COUNT(*)::int AS orders
 FROM events e
+JOIN users u ON u.id = e.user_id
 CROSS JOIN bounds b
 WHERE e.event_name = 'purchase'
   AND e.event_time >= b.first_month
   AND e.event_time < b.end_exclusive
+  AND (
+      CAST(:channel AS text) IS NULL
+      OR u.acquisition_channel = CAST(:channel AS text)
+  )
 GROUP BY month
 ORDER BY month;

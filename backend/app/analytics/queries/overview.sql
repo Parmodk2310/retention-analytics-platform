@@ -20,22 +20,36 @@ engagement AS (
             WHERE e.event_date BETWEEN (b.as_of_date - INTERVAL '29 days')::date AND b.as_of_date
         )::int AS mau
     FROM events e
+    JOIN users u ON u.id = e.user_id
     CROSS JOIN period_bounds b
     WHERE e.event_date BETWEEN (b.as_of_date - INTERVAL '29 days')::date AND b.as_of_date
+      AND (
+          CAST(:channel AS text) IS NULL
+          OR u.acquisition_channel = CAST(:channel AS text)
+      )
 ),
 period_commerce AS (
     SELECT
         COALESCE(SUM(e.revenue) FILTER (WHERE e.event_name = 'purchase'), 0)::float AS revenue,
         COUNT(DISTINCT e.user_id) FILTER (WHERE e.event_name = 'purchase')::int AS purchasers
     FROM events e
+    JOIN users u ON u.id = e.user_id
     CROSS JOIN period_bounds b
     WHERE e.event_date BETWEEN b.start_date AND b.as_of_date
+      AND (
+          CAST(:channel AS text) IS NULL
+          OR u.acquisition_channel = CAST(:channel AS text)
+      )
 ),
 new_users AS (
     SELECT COUNT(*)::int AS value
     FROM users u
     CROSS JOIN period_bounds b
     WHERE u.signup_date BETWEEN b.start_date AND b.as_of_date
+      AND (
+          CAST(:channel AS text) IS NULL
+          OR u.acquisition_channel = CAST(:channel AS text)
+      )
 )
 SELECT
     b.as_of_date,

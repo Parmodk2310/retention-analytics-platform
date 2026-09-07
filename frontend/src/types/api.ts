@@ -5,6 +5,7 @@ export type Account = {
 }
 
 export type Overview = {
+  as_of_date: string
   dau: number
   wau: number
   mau: number
@@ -31,11 +32,18 @@ export type FunnelStage = {
 
 export type CohortCell = {
   cohort_month: string
-  acquisition_channel: string
+  acquisition_channel: string | null
   period_month: number
   retained_users: number
   cohort_size: number
   retention_rate: number
+}
+
+export type RevenuePoint = {
+  month: string
+  revenue: number
+  purchasers: number
+  orders: number
 }
 
 export type ChannelPerformance = {
