@@ -23,17 +23,19 @@ router = APIRouter(
 @router.get("/overview", response_model=OverviewMetrics)
 async def overview(
     days: int = Query(30, ge=1, le=365),
+    channel: str | None = None,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
-    return await analytics_service.overview(db, days)
+    return await analytics_service.overview(db, days, channel)
 
 
 @router.get("/activity", response_model=list[ActivityPoint])
 async def activity(
     days: int = Query(30, ge=7, le=365),
+    channel: str | None = None,
     db: AsyncSession = Depends(get_db),
 ) -> list[dict]:
-    return await analytics_service.activity(db, days)
+    return await analytics_service.activity(db, days, channel)
 
 
 @router.get("/funnel", response_model=list[FunnelStage])
@@ -57,9 +59,10 @@ async def retention(
 @router.get("/revenue", response_model=list[RevenuePoint])
 async def revenue(
     months: int = Query(12, ge=1, le=24),
+    channel: str | None = None,
     db: AsyncSession = Depends(get_db),
 ) -> list[dict]:
-    return await analytics_service.revenue(db, months)
+    return await analytics_service.revenue(db, months, channel)
 
 
 @router.get("/channels", response_model=list[ChannelPerformance])

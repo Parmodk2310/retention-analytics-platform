@@ -19,8 +19,13 @@ aggregated AS (
         COUNT(*) FILTER (WHERE e.event_name = 'session_start')::int AS sessions,
         COALESCE(SUM(e.revenue) FILTER (WHERE e.event_name = 'purchase'), 0)::float AS revenue
     FROM events e
+    JOIN users u ON u.id = e.user_id
     CROSS JOIN bounds b
     WHERE e.event_date BETWEEN b.start_date AND b.as_of_date
+      AND (
+          CAST(:channel AS text) IS NULL
+          OR u.acquisition_channel = CAST(:channel AS text)
+      )
     GROUP BY e.event_date
 )
 SELECT

@@ -1,5 +1,83 @@
-import {useQuery} from '@tanstack/react-query';import {analyticsApi} from '@/services/analyticsApi';import {useUIStore} from '@/store/uiStore';
-export function useOverview(){const days=useUIStore(s=>s.days);return useQuery({queryKey:['overview',days],queryFn:()=>analyticsApi.overview(days),staleTime:60_000})}
-export function useActivity(){const days=useUIStore(s=>s.days);return useQuery({queryKey:['activity',days],queryFn:()=>analyticsApi.activity(days),staleTime:60_000})}
-export function useFunnel(){const days=useUIStore(s=>s.days),channel=useUIStore(s=>s.channel);return useQuery({queryKey:['funnel',days,channel],queryFn:()=>analyticsApi.funnel(days,channel)})}
-export function useRetention(){const channel=useUIStore(s=>s.channel);return useQuery({queryKey:['retention',channel],queryFn:()=>analyticsApi.retention(12,channel)})}
+import { useQuery } from '@tanstack/react-query'
+import { analyticsKeys } from '@/lib/queryKeys'
+import { analyticsApi } from '@/services/analyticsApi'
+import { useUIStore } from '@/store/uiStore'
+
+const STALE_TIME = 60_000
+
+export function monthsForDays(days: number) {
+  if (days <= 30) return 1
+  if (days <= 90) return 3
+  return 12
+}
+
+export function useOverview() {
+  const days = useUIStore((state) => state.days)
+  const channel = useUIStore((state) => state.channel)
+
+  return useQuery({
+    queryKey: analyticsKeys.overview(days, channel),
+    queryFn: () => analyticsApi.overview(days, channel),
+    staleTime: STALE_TIME,
+    placeholderData: (previous) => previous,
+  })
+}
+
+export function useActivity() {
+  const days = useUIStore((state) => state.days)
+  const channel = useUIStore((state) => state.channel)
+
+  return useQuery({
+    queryKey: analyticsKeys.activity(days, channel),
+    queryFn: () => analyticsApi.activity(days, channel),
+    staleTime: STALE_TIME,
+    placeholderData: (previous) => previous,
+  })
+}
+
+export function useFunnel() {
+  const days = useUIStore((state) => state.days)
+  const channel = useUIStore((state) => state.channel)
+
+  return useQuery({
+    queryKey: analyticsKeys.funnel(days, channel),
+    queryFn: () => analyticsApi.funnel(days, channel),
+    staleTime: STALE_TIME,
+    placeholderData: (previous) => previous,
+  })
+}
+
+export function useRetention(months = 12) {
+  const channel = useUIStore((state) => state.channel)
+
+  return useQuery({
+    queryKey: analyticsKeys.retention(months, channel),
+    queryFn: () => analyticsApi.retention(months, channel),
+    staleTime: STALE_TIME,
+    placeholderData: (previous) => previous,
+  })
+}
+
+export function useRevenue() {
+  const days = useUIStore((state) => state.days)
+  const channel = useUIStore((state) => state.channel)
+  const months = monthsForDays(days)
+
+  return useQuery({
+    queryKey: analyticsKeys.revenue(months, channel),
+    queryFn: () => analyticsApi.revenue(months, channel),
+    staleTime: STALE_TIME,
+    placeholderData: (previous) => previous,
+  })
+}
+
+export function useChannels() {
+  const days = useUIStore((state) => state.days)
+
+  return useQuery({
+    queryKey: analyticsKeys.channels(days),
+    queryFn: () => analyticsApi.channels(days),
+    staleTime: STALE_TIME,
+    placeholderData: (previous) => previous,
+  })
+}
