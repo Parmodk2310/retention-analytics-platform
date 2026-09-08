@@ -17,13 +17,14 @@ export function pageTitle(pathname: string): string {
   }
 
   const titles: Record<string, string> = {
-    metrics: 'Product Metrics',
-    funnel: 'Funnel Analysis',
-    cohorts: 'Cohort Retention',
-    experiments: 'Experiments',
-    churn: 'Churn Prediction',
-    settings: 'Settings',
-  }
+  metrics: 'Product Metrics',
+  funnel: 'Funnel Analysis',
+  cohorts: 'Cohort Retention',
+  experiments: 'Experiments',
+  churn: 'Churn Intelligence',
+  'model-health': 'Model Health',
+  settings: 'Settings',
+}
 
   return titles[segments[0]] ?? 'RetentionOS'
 }
