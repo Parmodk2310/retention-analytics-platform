@@ -1,23 +1,33 @@
 from datetime import datetime
+from typing import Self
 from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
+from app.experiments.assignment import validate_assignment_contract
+
 
 class ExperimentCreate(BaseModel):
-    key: str = Field(pattern=r"^[a-z0-9_\-]+$", max_length=80)
-    name: str = Field(max_length=160)
-    hypothesis: str = Field(max_length=500)
-    primary_metric: str = "activation_rate"
+    key: str = Field(
+        min_length=1,
+        max_length=80,
+        pattern=r"^[a-z0-9][a-z0-9_-]*$",
+    )
+    name: str = Field(min_length=1, max_length=160)
+    hypothesis: str = Field(min_length=1, max_length=500)
+    primary_metric: str = Field(default="activation_rate", min_length=1, max_length=80)
     variants: list[str] = Field(min_length=2, max_length=5)
     traffic_allocation: dict[str, float]
+    starts_at: datetime | None = None
+    ends_at: datetime | None = None
 
     @model_validator(mode="after")
-    def allocations(self):
-        if set(self.variants) != set(self.traffic_allocation):
-            raise ValueError("allocation keys must match variants")
-        if abs(sum(self.traffic_allocation.values()) - 1.0) > 1e-9:
-            raise ValueError("traffic allocation must sum to 1")
+    def validate_contract(self) -> Self:
+        validate_assignment_contract(self.variants, self.traffic_allocation)
+
+        if self.starts_at and self.ends_at and self.starts_at >= self.ends_at:
+            raise ValueError("starts_at must be before ends_at")
+
         return self
 
 
@@ -27,11 +37,12 @@ class ExperimentResponse(BaseModel):
     name: str
     hypothesis: str
     primary_metric: str
-    variants: list
-    traffic_allocation: dict
+    variants: list[str]
+    traffic_allocation: dict[str, float]
     status: str
     starts_at: datetime | None
     ends_at: datetime | None
+
     model_config = {"from_attributes": True}
 
 
