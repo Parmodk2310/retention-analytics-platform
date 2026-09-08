@@ -46,7 +46,18 @@ async def test_consume_once_persists_then_acks(monkeypatch):
     ]
 
     persist = AsyncMock(return_value=(1, 0))
-    monkeypatch.setattr(event_consumer, "ingest", persist)
+    monkeypatch.setattr(
+        event_consumer,
+        "ingest",
+        persist,
+    )
+
+    acknowledge = AsyncMock()
+    monkeypatch.setattr(
+        event_consumer,
+        "acknowledge_persisted",
+        acknowledge,
+    )
 
     accepted, duplicated, dead_lettered = await event_consumer.consume_once(
         cast(Redis, redis),
@@ -56,11 +67,7 @@ async def test_consume_once_persists_then_acks(monkeypatch):
 
     assert (accepted, duplicated, dead_lettered) == (1, 0, 0)
     persist.assert_awaited_once()
-    redis.xack.assert_awaited_once_with(
-        settings.EVENT_STREAM_NAME,
-        settings.EVENT_STREAM_GROUP,
-        "1000-0",
-    )
+    acknowledge.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -143,6 +150,8 @@ async def test_pending_message_is_claimed_for_retry(monkeypatch):
 
     persist = AsyncMock(return_value=(1, 0))
     monkeypatch.setattr(event_consumer, "ingest", persist)
+    acknowledge = AsyncMock()
+    monkeypatch.setattr(event_consumer, "acknowledge_persisted", acknowledge)
 
     result = await event_consumer.recover_pending_once(
         cast(Redis, redis),
