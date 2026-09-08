@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import { DecisionBadge } from '@/components/experiments/DecisionBadge'
+import { ExperimentIntelligence } from '@/components/experiments/ExperimentIntelligence'
 import { Card } from '@/components/ui/Card'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { percent } from '@/lib/formatters'
@@ -52,10 +53,8 @@ export default function ExperimentDetail() {
           <h2 className="text-2xl font-semibold">
             {experiment?.name ?? 'Experiment Analysis'}
           </h2>
-
           <DecisionBadge decision={result.decision} />
         </div>
-      
 
         {experiment && (
           <div className="space-y-1 text-sm opacity-60">
@@ -86,17 +85,13 @@ export default function ExperimentDetail() {
             return (
               <Card key={variant} className="p-5">
                 <p className="text-sm capitalize opacity-60">{variant}</p>
-
-                <p className="mt-2 text-3xl font-semibold">
-                  {percent(conversionRate)}
-                </p>
-
+                <p className="mt-2 text-3xl font-semibold">{percent(conversionRate)}</p>
                 <p className="text-xs opacity-50">
                   n={result.counts[variant]?.toLocaleString() ?? '0'}
-              </p>
-            </Card>
-          )
-        })}
+                </p>
+              </Card>
+            )
+          })}
       </div>
 
       {result.analysis && (
@@ -118,7 +113,7 @@ export default function ExperimentDetail() {
                 {result.analysis.relative_lift == null
                   ? '—'
                   : `${result.analysis.relative_lift >= 0 ? '+' : ''}${percent(
-                    result.analysis.relative_lift,
+                      result.analysis.relative_lift,
                     )}`}
               </b>
             </div>
@@ -135,6 +130,11 @@ export default function ExperimentDetail() {
           </div>
         </Card>
       )}
+
+      <ExperimentIntelligence
+        result={result}
+        metricLabel={experiment?.primary_metric}
+      />
     </div>
   )
 }
