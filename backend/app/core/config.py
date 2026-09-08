@@ -5,9 +5,16 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+ENV_FILE = REPO_ROOT / ".env"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
+        env_file=str(ENV_FILE),
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",
     )
     APP_NAME: str = "Retention Analytics API"
     APP_ENV: str = "development"
@@ -16,8 +23,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "development-only-change-me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    DATABASE_URL: str = "postgresql+asyncpg://retention:retention@localhost:5432/retention"
-    DATABASE_URL_SYNC: str = "postgresql+psycopg://retention:retention@localhost:5432/retention"
+    DATABASE_URL: str
+    DATABASE_URL_SYNC: str
     REDIS_URL: str = "redis://localhost:6379/0"
     ALLOWED_ORIGINS: list[str] = Field(default_factory=list)
     TRUSTED_HOSTS: list[str] = Field(default_factory=lambda: ["localhost", "127.0.0.1"])
@@ -31,7 +38,7 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings()  # pyright: ignore[reportCallIssue]
 
 
 settings = get_settings()

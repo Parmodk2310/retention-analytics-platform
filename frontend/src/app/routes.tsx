@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ComponentType } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AppShell } from '@/components/layout/AppShell'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -43,6 +43,7 @@ export const router = createBrowserRouter([
           { path: '/experiments/:id', element: page(ExperimentDetail) },
           { path: '/model-health', element: page(ModelHealth) },
           { path: '/settings', element: page(Settings) },
+          { path: '*', element:(<Navigate to="/" replace/>)},
         ],
       },
     ],

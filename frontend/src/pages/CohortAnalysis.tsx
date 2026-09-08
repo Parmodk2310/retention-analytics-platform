@@ -6,7 +6,7 @@ import { useRetention } from '@/hooks/useAnalytics'
 import { useUIStore } from '@/store/uiStore'
 
 export default function CohortAnalysis() {
-  const query = useRetention(12)
+  const query = useRetention()
   const channel = useUIStore((state) => state.channel)
 
   if (query.isLoading && !query.data) return <Skeleton className="h-[540px]" />

@@ -1,14 +1,21 @@
 services:
   postgres:
     image: postgres:16-alpine
+
     environment:
-      POSTGRES_DB: retention
-      POSTGRES_USER: retention
-      POSTGRES_PASSWORD: retention
-    ports: ["5432:5432"]
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+
+    ports:
+      - "55432:5432"
     volumes: [postgres-data:/var/lib/postgresql/data]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U retention -d retention"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"
+        ]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -28,8 +35,8 @@ services:
     build: ./backend
     env_file: .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://retention:retention@postgres:5432/retention
-      DATABASE_URL_SYNC: postgresql+psycopg://retention:retention@postgres:5432/retention
+      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+      DATABASE_URL_SYNC: "postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
       REDIS_URL: redis://redis:6379/0
     ports: ["8000:8000"]
     depends_on:
@@ -50,9 +57,10 @@ services:
     build: ./data-generator
     env_file: .env
     environment:
-      DATABASE_URL_SYNC: postgresql+psycopg://retention:retention@postgres:5432/retention
+      DATABASE_URL_SYNC: "postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
     depends_on:
-      postgres: {condition: service_healthy}
+      postgres:
+        condition: service_healthy
     profiles: [tools]
 
 volumes:

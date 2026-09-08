@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY alembic.ini ./
 COPY alembic ./alembic
 COPY app ./app
+COPY scripts ./scripts
 RUN mkdir -p /app/app/ml/artifacts && chown -R app:app /app
 USER app
 EXPOSE 8000
