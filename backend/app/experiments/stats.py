@@ -4,6 +4,7 @@ from numbers import Integral
 import numpy as np
 from scipy.stats import norm
 from statsmodels.stats.proportion import proportions_ztest
+from app.experiments.effect_size import binary_effect_size
 
 DEFAULT_ALPHA = 0.05
 
@@ -61,6 +62,10 @@ def analyze_binary(
     treatment_rate = treatment_conversions / treatment_n
     difference = treatment_rate - control_rate
 
+    effect_size = binary_effect_size(
+        control_rate,
+        treatment_rate,
+    )
     counts = np.array(
         [treatment_conversions, control_conversions],
         dtype=float,
@@ -100,4 +105,5 @@ def analyze_binary(
         "confidence_level": confidence_level,
         "alpha": alpha,
         "significant": significant,
+        "effect_size": effect_size,
     }
