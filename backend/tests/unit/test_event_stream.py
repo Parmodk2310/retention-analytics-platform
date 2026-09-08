@@ -5,9 +5,14 @@ from uuid import UUID
 
 import pytest
 from redis.asyncio import Redis
-
+from unittest.mock import AsyncMock
 from app.core.config import settings
-from app.realtime.event_stream import enqueue_events
+from app.realtime.event_stream import (
+    enqueue_events,
+    EventStreamBackpressure,
+    ensure_stream_capacity,
+    stream_backlog,
+)
 from app.schemas.event import EventIn
 
 
@@ -88,3 +93,43 @@ async def test_empty_batch_does_not_write():
 
     assert ids == []
     assert redis.pipe.calls == []
+
+
+@pytest.mark.asyncio
+async def test_stream_backlog_combines_pending_and_lag():
+    redis = AsyncMock()
+    redis.xinfo_groups.return_value = [
+        {
+            "name": settings.EVENT_STREAM_GROUP,
+            "pending": 7,
+            "lag": 13,
+        }
+    ]
+
+    backlog = await stream_backlog(cast(Redis, redis))
+
+    assert backlog == 20
+
+
+@pytest.mark.asyncio
+async def test_capacity_rejects_excess_backlog(monkeypatch):
+    redis = AsyncMock()
+    redis.xinfo_groups.return_value = [
+        {
+            "name": settings.EVENT_STREAM_GROUP,
+            "pending": 20,
+            "lag": 80,
+        }
+    ]
+
+    monkeypatch.setattr(
+        settings,
+        "EVENT_STREAM_BACKLOG_LIMIT",
+        100,
+    )
+
+    with pytest.raises(EventStreamBackpressure):
+        await ensure_stream_capacity(
+            cast(Redis, redis),
+            1,
+        )
