@@ -1,16 +1,49 @@
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.repositories.event_repository import insert_events
-from app.schemas.event import EventBatch
+from app.schemas.event import EventBatch, EventIn
+
+
+def deduplicate_events(events: list[EventIn]) -> tuple[list[EventIn], int]:
+    unique: list[EventIn] = []
+    event_ids: set[UUID] = set()
+    idempotency_keys: set[str] = set()
+    duplicated = 0
+
+    for event in events:
+        duplicate_id = event.event_id is not None and event.event_id in event_ids
+        duplicate_key = (
+            event.idempotency_key is not None and event.idempotency_key in idempotency_keys
+        )
+
+        if duplicate_id or duplicate_key:
+            duplicated += 1
+            continue
+
+        if event.event_id is not None:
+            event_ids.add(event.event_id)
+        if event.idempotency_key is not None:
+            idempotency_keys.add(event.idempotency_key)
+
+        unique.append(event)
+
+    return unique, duplicated
+
+
+def _event_row(event: EventIn) -> dict:
+    row = event.model_dump()
+    row["event_id"] = row["event_id"] or uuid4()
+    row["event_date"] = row["event_time"].date()
+    return row
 
 
 async def ingest(db: AsyncSession, batch: EventBatch) -> tuple[int, int]:
-    rows = []
-    for item in batch.events:
-        d = item.model_dump()
-        d["event_id"] = d["event_id"] or uuid4()
-        d["event_date"] = d["event_time"].date()
-        rows.append(d)
-    return await insert_events(db, rows)
+    unique, in_batch_duplicates = deduplicate_events(batch.events)
+    accepted, db_duplicates = await insert_events(
+        db,
+        [_event_row(event) for event in unique],
+    )
+
+    return accepted, in_batch_duplicates + db_duplicates
