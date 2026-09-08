@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Experiment, ExperimentAssignment, ExperimentExposure
 from app.experiments.assignment import assign_variant, validate_assignment_contract
 from app.experiments.decision import recommend
+from app.experiments.lifecycle import ensure_experiment_active
 from app.experiments.metrics import binary_conversion_counts
 from app.experiments.srm import sample_ratio_mismatch
 from app.experiments.stats import analyze_binary
@@ -59,6 +60,8 @@ async def get_or_assign(
             raise RuntimeError("persisted assignment has an unknown variant")
         return existing
 
+    ensure_experiment_active(experiment)
+
     variant = assign_variant(
         str(user_id),
         str(experiment.id),
@@ -91,6 +94,7 @@ async def expose(
     experiment: Experiment,
     user_id: UUID,
 ) -> str:
+    ensure_experiment_active(experiment)
     assignment = await get_or_assign(db, experiment, user_id)
 
     statement = (
@@ -123,6 +127,7 @@ async def results(
     )
 
     observed = {variant: counts.get(variant, {}).get("n", 0) for variant in variants}
+
     rates = {
         variant: (
             counts.get(variant, {}).get("conversions", 0) / observed[variant]
@@ -135,7 +140,7 @@ async def results(
     srm = sample_ratio_mismatch(observed, experiment.traffic_allocation)
     analysis = None
 
-    if len(variants) == 2 and all(observed[v] > 0 for v in variants):
+    if len(variants) == 2 and all(observed[variant] > 0 for variant in variants):
         control, treatment = variants
 
         analysis = analyze_binary(
