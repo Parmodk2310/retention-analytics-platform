@@ -35,30 +35,68 @@ function Stat({
 
 function Inference({ analysis }: { analysis: ExperimentAnalysis }) {
   const [lower, upper] = analysis.difference_ci
+  const confidenceLevel = analysis.confidence_level ?? 0.95
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <Stat
-        label="Absolute lift"
-        value={percentagePoints(analysis.absolute_lift)}
-        note={`95% CI ${percentagePoints(lower)} to ${percentagePoints(upper)}`}
-      />
-      <Stat
-        label="Relative lift"
-        value={percentage(analysis.relative_lift)}
-        note={`z = ${fixed(analysis.z_stat)} · p = ${analysis.p_value.toFixed(4)}`}
-      />
-      <Stat
-        label="Control rate"
-        value={percentage(analysis.control_rate)}
-        note="Observed control conversion"
-      />
-      <Stat
-        label="Treatment rate"
-        value={percentage(analysis.treatment_rate)}
-        note={analysis.significant ? 'Statistically significant' : 'Not statistically significant'}
-      />
-    </div>
+    <>
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Stat
+          label="Absolute lift"
+          value={percentagePoints(analysis.absolute_lift)}
+          note={`${Math.round(confidenceLevel * 100)}% CI ${percentagePoints(
+            lower,
+          )} to ${percentagePoints(upper)}`}
+        />
+        <Stat
+          label="Relative lift"
+          value={percentage(analysis.relative_lift)}
+          note={`z = ${fixed(analysis.z_stat)} · p = ${analysis.p_value.toFixed(4)}`}
+        />
+        <Stat
+          label="Control rate"
+          value={percentage(analysis.control_rate)}
+          note="Observed control conversion"
+        />
+        <Stat
+          label="Treatment rate"
+          value={percentage(analysis.treatment_rate)}
+          note={
+            analysis.significant ? 'Statistically significant' : 'Not statistically significant'
+          }
+        />
+      </div>
+
+      {analysis.effect_size && (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Stat
+            label="Risk ratio"
+            value={fixed(analysis.effect_size.risk_ratio, 3)}
+            note={`Odds ratio ${fixed(analysis.effect_size.odds_ratio, 3)}`}
+          />
+          <Stat
+            label={analysis.effect_size.number_needed_type?.toUpperCase() ?? 'NNT'}
+            value={fixed(analysis.effect_size.number_needed, 1)}
+            note={`Effect: ${analysis.effect_size.direction}`}
+          />
+          {analysis.power && (
+            <>
+              <Stat
+                label="Power for target effect"
+                value={percentage(analysis.power.power_at_target_effect)}
+                note={`${percentage(analysis.power.target_power, 0)} target power · ${percentage(
+                  analysis.power.target_relative_lift,
+                )} target lift`}
+              />
+              <Stat
+                label="80% MDE"
+                value={percentage(analysis.power.mde_relative)}
+                note={`${analysis.power.required_control_n.toLocaleString()} control + ${analysis.power.required_treatment_n.toLocaleString()} treatment required`}
+              />
+            </>
+          )}
+        </div>
+      )}
+    </>
   )
 }
 
@@ -66,6 +104,12 @@ export function ExperimentIntelligence({
   result,
   metricLabel = 'Primary conversion metric',
 }: Props) {
+  const srmMethod = {
+    exact_binomial: 'Exact binomial allocation check',
+    pearson_chi_square: 'Pearson chi-square allocation check',
+    not_tested: 'Allocation check not performed',
+  }[result.srm.method] ?? result.srm.method.replaceAll('_', ' ')
+
   const variants = Object.entries(result.conversion_rates).map(
     ([variant, conversionRate]) => ({
       variant,
@@ -122,7 +166,7 @@ export function ExperimentIntelligence({
         <Stat
           label="SRM p-value"
           value={result.srm.p_value.toFixed(4)}
-          note="Chi-square allocation check"
+          note={srmMethod}
         />
         <Stat
           label="Mature exposures"
