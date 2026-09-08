@@ -34,6 +34,13 @@ class Settings(BaseSettings):
     EVENT_INGEST_KEY: str | None = None
     MAX_PAGE_SIZE: int = 100
     RATE_LIMIT_DEFAULT: str = "120/minute"
+    EVENT_STREAM_NAME: str = "events:ingest"
+    EVENT_STREAM_MAXLEN: int = 100_000
+    EVENT_STREAM_SCHEMA_VERSION: str = "1"
+    EVENT_STREAM_GROUP: str = "retention-event-workers"
+    EVENT_STREAM_BLOCK_MS: int = 5_000
+    EVENT_STREAM_READ_COUNT: int = 100
+
 
 
 @lru_cache
