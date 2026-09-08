@@ -9,11 +9,11 @@ from app.db.models import Experiment, ExperimentAssignment, ExperimentExposure
 from app.experiments.assignment import assign_variant, validate_assignment_contract
 from app.experiments.decision import recommend
 from app.experiments.lifecycle import ensure_experiment_active
+from app.experiments.metric_contract import resolve_metric
 from app.experiments.metrics import binary_conversion_counts
 from app.experiments.srm import sample_ratio_mismatch
 from app.experiments.stats import analyze_binary
 from app.schemas.experiment import ExperimentCreate
-from app.experiments.metric_contract import resolve_metric
 
 
 def _assignment_query(experiment_id: UUID, user_id: UUID):
@@ -29,10 +29,7 @@ def _variants(experiment: Experiment) -> list[str]:
     return variants
 
 
-async def create_experiment(
-    db: AsyncSession,
-    payload: ExperimentCreate,
-) -> Experiment:
+async def create_experiment(db: AsyncSession, payload: ExperimentCreate) -> Experiment:
     experiment = Experiment(**payload.model_dump())
     db.add(experiment)
     await db.commit()
@@ -69,11 +66,7 @@ async def get_or_assign(
 
     statement = (
         insert(ExperimentAssignment)
-        .values(
-            experiment_id=experiment.id,
-            user_id=user_id,
-            variant=variant,
-        )
+        .values(experiment_id=experiment.id, user_id=user_id, variant=variant)
         .on_conflict_do_nothing(constraint="uq_assignment_experiment_user")
     )
 
@@ -87,11 +80,7 @@ async def get_or_assign(
     return assignment
 
 
-async def expose(
-    db: AsyncSession,
-    experiment: Experiment,
-    user_id: UUID,
-) -> str:
+async def expose(db: AsyncSession, experiment: Experiment, user_id: UUID) -> str:
     ensure_experiment_active(experiment)
     assignment = await get_or_assign(db, experiment, user_id)
 
@@ -111,10 +100,7 @@ async def expose(
     return assignment.variant
 
 
-async def results(
-    db: AsyncSession,
-    experiment: Experiment,
-) -> dict:
+async def results(db: AsyncSession, experiment: Experiment) -> dict:
     variants = _variants(experiment)
     metric = resolve_metric(experiment.primary_metric)
 
@@ -126,35 +112,43 @@ async def results(
     )
 
     observed = {variant: counts.get(variant, {}).get("n", 0) for variant in variants}
-
+    conversions = {variant: counts.get(variant, {}).get("conversions", 0) for variant in variants}
     rates = {
-        variant: (
-            counts.get(variant, {}).get("conversions", 0) / observed[variant]
-            if observed[variant]
-            else 0.0
-        )
+        variant: conversions[variant] / observed[variant] if observed[variant] else 0.0
         for variant in variants
     }
 
-    srm = sample_ratio_mismatch(
-        observed,
-        experiment.traffic_allocation,
-    )
+    variant_results = [
+        {
+            "variant": variant,
+            "n": observed[variant],
+            "conversions": conversions[variant],
+            "conversion_rate": rates[variant],
+        }
+        for variant in variants
+    ]
 
+    srm = sample_ratio_mismatch(observed, experiment.traffic_allocation)
     analysis = None
 
-    if len(variants) == 2 and all(observed[v] > 0 for v in variants):
+    if len(variants) == 2 and all(observed[variant] > 0 for variant in variants):
         control, treatment = variants
-
         analysis = analyze_binary(
-            counts[control]["conversions"],
-            counts[control]["n"],
-            counts[treatment]["conversions"],
-            counts[treatment]["n"],
+            conversions[control],
+            observed[control],
+            conversions[treatment],
+            observed[treatment],
         )
 
     return {
         "experiment_id": experiment.id,
+        "metric": {
+            "key": metric.key,
+            "label": metric.label,
+            "event_name": metric.event_name,
+            "window_days": metric.window_days,
+        },
+        "variants": variant_results,
         "counts": observed,
         "conversion_rates": rates,
         "srm": srm,

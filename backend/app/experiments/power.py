@@ -1,4 +1,5 @@
 import math
+from typing import Any
 
 from statsmodels.stats.power import NormalIndPower
 from statsmodels.stats.proportion import proportion_effectsize
@@ -18,13 +19,9 @@ def _validate_sample_size(value: int, name: str) -> None:
         raise ValueError(f"{name} must be a positive integer")
 
 
-def _rate_from_effect(
-    baseline_rate: float,
-    effect_size: float,
-) -> float:
-    baseline_angle = math.asin(math.sqrt(baseline_rate))
-    treatment_angle = baseline_angle + effect_size / 2
-    return min(1.0, max(0.0, math.sin(treatment_angle) ** 2))
+def _treatment_rate_from_effect(control_rate: float, effect_size: float) -> float:
+    angle = math.asin(math.sqrt(control_rate)) + effect_size / 2
+    return min(1.0, max(0.0, math.sin(angle) ** 2))
 
 
 def power_diagnostics(
@@ -46,25 +43,20 @@ def power_diagnostics(
         raise ValueError("target_relative_lift must be positive")
 
     ratio = treatment_n / control_n
+    solver_ratio: Any = ratio
     target_treatment_rate = control_rate * (1 + target_relative_lift)
 
     if target_treatment_rate >= 1:
         raise ValueError("target relative lift produces an invalid treatment rate")
 
     solver = NormalIndPower()
-
-    target_effect = abs(
-        proportion_effectsize(
-            target_treatment_rate,
-            control_rate,
-        )
-    )
+    target_effect = abs(proportion_effectsize(target_treatment_rate, control_rate))
 
     power_at_target = solver.power(
         effect_size=target_effect,
         nobs1=control_n,
         alpha=alpha,
-        ratio=ratio,
+        ratio=solver_ratio,
         alternative="two-sided",
     )
 
@@ -73,28 +65,28 @@ def power_diagnostics(
         nobs1=control_n,
         alpha=alpha,
         power=target_power,
-        ratio=ratio,
+        ratio=solver_ratio,
         alternative="two-sided",
     )
 
-    mde_treatment_rate = _rate_from_effect(
+    mde_treatment_rate = _treatment_rate_from_effect(
         control_rate,
         abs(float(required_effect)),
     )
-
     mde_absolute = mde_treatment_rate - control_rate
-    mde_relative = mde_absolute / control_rate
 
-    required_control_n = solver.solve_power(
-        effect_size=target_effect,
-        nobs1=None,
-        alpha=alpha,
-        power=target_power,
-        ratio=ratio,
-        alternative="two-sided",
+    required_control_n = math.ceil(
+        float(
+            solver.solve_power(
+                effect_size=target_effect,
+                nobs1=None,
+                alpha=alpha,
+                power=target_power,
+                ratio=solver_ratio,
+                alternative="two-sided",
+            )
+        )
     )
-
-    required_control_n = math.ceil(float(required_control_n))
     required_treatment_n = math.ceil(required_control_n * ratio)
 
     return {
@@ -107,7 +99,7 @@ def power_diagnostics(
         "target_absolute_lift": target_treatment_rate - control_rate,
         "power_at_target_effect": float(power_at_target),
         "mde_absolute": mde_absolute,
-        "mde_relative": mde_relative,
+        "mde_relative": mde_absolute / control_rate,
         "required_control_n": required_control_n,
         "required_treatment_n": required_treatment_n,
         "adequately_powered_for_target": bool(power_at_target >= target_power),
