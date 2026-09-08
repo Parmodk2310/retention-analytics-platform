@@ -37,15 +37,23 @@ class Settings(BaseSettings):
     EVENT_STREAM_NAME: str = "events:ingest"
     EVENT_STREAM_MAXLEN: int = 100_000
     EVENT_STREAM_SCHEMA_VERSION: str = "1"
+
     EVENT_STREAM_GROUP: str = "retention-event-workers"
     EVENT_STREAM_BLOCK_MS: int = 5_000
     EVENT_STREAM_READ_COUNT: int = 100
+
+    EVENT_STREAM_MAX_DELIVERIES: int = 5
+    EVENT_STREAM_RETRY_IDLE_MS: int = 30_000
     EVENT_STREAM_DLQ_NAME: str = "events:ingest:dlq"
     EVENT_STREAM_DLQ_MAXLEN: int = 10_000
-    EVENT_STREAM_RETRY_IDLE_MS: int = 15_000
-    EVENT_STREAM_MAX_DELIVERIES: int = 5
+
     EVENT_DB_BATCH_SIZE: int = 100
 
+    EVENT_PIPELINE_FRESHNESS_KEY: str = "events:pipeline:freshness"
+    EVENT_PIPELINE_FRESHNESS_SLA_SECONDS: int = 60
+
+    EVENT_STREAM_BACKLOG_LIMIT: int = 50_000
+    EVENT_STREAM_RETRY_AFTER_SECONDS: int = 5
 
 
 @lru_cache

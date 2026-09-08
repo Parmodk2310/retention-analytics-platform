@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.schemas.event import EventBatch, EventIn
 from app.services.event_service import ingest
+from app.realtime.event_freshness import acknowledge_persisted
 
 
 def _text(value: bytes | str) -> str:
@@ -87,6 +88,14 @@ async def _process_messages(
         settings.EVENT_STREAM_NAME,
         settings.EVENT_STREAM_GROUP,
         *ids,
+    )
+
+    await acknowledge_persisted(
+        redis,
+        ids,
+        events,
+        accepted,
+        duplicated,
     )
 
     return accepted, duplicated, dead_lettered

@@ -4,7 +4,8 @@ import { analyticsKeys } from '@/lib/queryKeys'
 import { analyticsApi } from '@/services/analyticsApi'
 import { useUIStore } from '@/store/uiStore'
 
-const STALE_TIME = 60_000
+const STALE_TIME = 15_000
+const REFETCH_INTERVAL = 30_000
 
 export function monthsForDays(days: number) {
   if (days <= 30) return 1
@@ -80,6 +81,7 @@ export function useChannels() {
     queryKey: analyticsKeys.channels(days),
     queryFn: () => analyticsApi.channels(days),
     staleTime: STALE_TIME,
+    refetchInterval: REFETCH_INTERVAL,
     placeholderData: (previous) => previous,
   })
 }
