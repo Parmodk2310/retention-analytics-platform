@@ -76,3 +76,61 @@ async def test_ingest_combines_duplicate_counts(monkeypatch):
     assert len(rows) == 2
     assert all(row["event_id"] is not None for row in rows)
     assert all(row["event_date"] == row["event_time"].date() for row in rows)
+
+
+@pytest.mark.asyncio
+async def test_ingest_uses_bounded_database_batches(monkeypatch):
+    events = [make_event() for _ in range(250)]
+
+    insert = AsyncMock(
+        side_effect=[
+            (100, 0),
+            (100, 0),
+            (50, 0),
+        ]
+    )
+    monkeypatch.setattr(event_service, "insert_events", insert)
+    monkeypatch.setattr(
+        event_service.settings,
+        "EVENT_DB_BATCH_SIZE",
+        100,
+    )
+
+    accepted, duplicated = await event_service.ingest(
+        make_db(),
+        EventBatch(events=events),
+    )
+
+    assert accepted == 250
+    assert duplicated == 0
+    assert insert.await_count == 3
+
+    sizes = [len(call.args[1]) for call in insert.await_args_list]
+
+    assert sizes == [100, 100, 50]
+
+
+@pytest.mark.asyncio
+async def test_ingest_aggregates_database_duplicates(monkeypatch):
+    events = [make_event() for _ in range(150)]
+
+    insert = AsyncMock(
+        side_effect=[
+            (98, 2),
+            (48, 2),
+        ]
+    )
+    monkeypatch.setattr(event_service, "insert_events", insert)
+    monkeypatch.setattr(
+        event_service.settings,
+        "EVENT_DB_BATCH_SIZE",
+        100,
+    )
+
+    accepted, duplicated = await event_service.ingest(
+        make_db(),
+        EventBatch(events=events),
+    )
+
+    assert accepted == 146
+    assert duplicated == 4

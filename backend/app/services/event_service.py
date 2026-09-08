@@ -1,7 +1,9 @@
+from collections.abc import Iterator
 from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.db.repositories.event_repository import insert_events
 from app.schemas.event import EventBatch, EventIn
 
@@ -39,11 +41,21 @@ def _event_row(event: EventIn) -> dict:
     return row
 
 
-async def ingest(db: AsyncSession, batch: EventBatch) -> tuple[int, int]:
-    unique, in_batch_duplicates = deduplicate_events(batch.events)
-    accepted, db_duplicates = await insert_events(
-        db,
-        [_event_row(event) for event in unique],
-    )
+def _chunks(rows: list[dict], size: int) -> Iterator[list[dict]]:
+    for start in range(0, len(rows), size):
+        yield rows[start : start + size]
 
-    return accepted, in_batch_duplicates + db_duplicates
+
+async def ingest(db: AsyncSession, batch: EventBatch) -> tuple[int, int]:
+    unique, request_duplicates = deduplicate_events(batch.events)
+    rows = [_event_row(event) for event in unique]
+
+    accepted = 0
+    database_duplicates = 0
+
+    for chunk in _chunks(rows, settings.EVENT_DB_BATCH_SIZE):
+        chunk_accepted, chunk_duplicates = await insert_events(db, chunk)
+        accepted += chunk_accepted
+        database_duplicates += chunk_duplicates
+
+    return accepted, request_duplicates + database_duplicates
