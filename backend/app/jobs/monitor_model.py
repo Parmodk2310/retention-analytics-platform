@@ -8,8 +8,24 @@ from app.core.config import settings
 def status() -> dict:
     engine = create_engine(settings.DATABASE_URL_SYNC, pool_pre_ping=True)
     with engine.connect() as connection:
-        model = connection.execute(text("SELECT model_version, algorithm, metrics, trained_at FROM model_runs ORDER BY trained_at DESC LIMIT 1")).mappings().first()
-        scores = connection.execute(text("SELECT MAX(snapshot_date) snapshot_date, COUNT(*) score_count FROM churn_scores")).mappings().one()
+        model = (
+            connection.execute(
+                text(
+                    "SELECT model_version, algorithm, metrics, trained_at FROM model_runs ORDER BY trained_at DESC LIMIT 1"
+                )
+            )
+            .mappings()
+            .first()
+        )
+        scores = (
+            connection.execute(
+                text(
+                    "SELECT MAX(snapshot_date) snapshot_date, COUNT(*) score_count FROM churn_scores"
+                )
+            )
+            .mappings()
+            .one()
+        )
     if model is None:
         return {"status": "missing_model", "score_count": int(scores["score_count"])}
     metrics = model["metrics"]
@@ -27,7 +43,9 @@ def status() -> dict:
         "algorithm": model["algorithm"],
         "metrics": metrics,
         "trained_at": model["trained_at"].isoformat(),
-        "latest_score_date": scores["snapshot_date"].isoformat() if scores["snapshot_date"] else None,
+        "latest_score_date": scores["snapshot_date"].isoformat()
+        if scores["snapshot_date"]
+        else None,
         "score_count": int(scores["score_count"]),
     }
 

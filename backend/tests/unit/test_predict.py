@@ -11,12 +11,20 @@ class Model:
 
 
 def test_predict_scores_are_probabilities():
-    frame = pd.DataFrame({
-        "sessions_90d": [0.2, 0.8], "sessions_30d": [0, 0], "searches_30d": [0, 0],
-        "carts_30d": [0, 0], "checkouts_30d": [0, 0], "purchases_90d": [0, 0],
-        "revenue_90d": [0, 0], "days_since_last_activity": [0, 0],
-        "acquisition_channel": ["organic", "organic"], "device_type": ["web", "web"],
-    })
+    frame = pd.DataFrame(
+        {
+            "sessions_90d": [0.2, 0.8],
+            "sessions_30d": [0, 0],
+            "searches_30d": [0, 0],
+            "carts_30d": [0, 0],
+            "checkouts_30d": [0, 0],
+            "purchases_90d": [0, 0],
+            "revenue_90d": [0, 0],
+            "days_since_last_activity": [0, 0],
+            "acquisition_channel": ["organic", "organic"],
+            "device_type": ["web", "web"],
+        }
+    )
     assert predict_scores(Model(), frame).tolist() == [0.2, 0.8]
 
 
