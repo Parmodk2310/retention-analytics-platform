@@ -1,4 +1,17 @@
 services:
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+
   postgres:
     image: postgres:16-alpine
 
@@ -20,16 +33,6 @@ services:
       timeout: 5s
       retries: 20
 
-  redis:
-    image: redis:7-alpine
-    command: ["redis-server", "--appendonly", "yes"]
-    ports: ["6379:6379"]
-    volumes: [redis-data:/data]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
 
   backend:
     build: ./backend
@@ -38,12 +41,40 @@ services:
       DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
       DATABASE_URL_SYNC: "postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
       REDIS_URL: redis://redis:6379/0
+      EVENT_STREAM_NAME: ${EVENT_STREAM_NAME:-events:ingest}
+      EVENT_STREAM_MAXLEN: ${EVENT_STREAM_MAXLEN:-100000}
+      EVENT_STREAM_SCHEMA_VERSION: ${EVENT_STREAM_SCHEMA_VERSION:-1}
+      EVENT_STREAM_GROUP: ${EVENT_STREAM_GROUP:-retention-event-workers}
+      EVENT_STREAM_BLOCK_MS: ${EVENT_STREAM_BLOCK_MS:-5000}
+      EVENT_STREAM_READ_COUNT: ${EVENT_STREAM_READ_COUNT:-100}
     ports: ["8000:8000"]
     depends_on:
       postgres: {condition: service_healthy}
       redis: {condition: service_healthy}
     volumes:
       - ./backend/app/ml/artifacts:/app/app/ml/artifacts
+
+  event-worker:
+    build: ./backend
+    command: python -m app.jobs.consume_events
+    env_file: .env
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+      DATABASE_URL_SYNC: "postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+      REDIS_URL: redis://redis:6379/0
+      EVENT_STREAM_NAME: ${EVENT_STREAM_NAME:-events:ingest}
+      EVENT_STREAM_MAXLEN: ${EVENT_STREAM_MAXLEN:-100000}
+      EVENT_STREAM_SCHEMA_VERSION: ${EVENT_STREAM_SCHEMA_VERSION:-1}
+      EVENT_STREAM_GROUP: ${EVENT_STREAM_GROUP:-retention-event-workers}
+      EVENT_STREAM_BLOCK_MS: ${EVENT_STREAM_BLOCK_MS:-5000}
+      EVENT_STREAM_READ_COUNT: ${EVENT_STREAM_READ_COUNT:-100}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
 
   frontend:
     build:
