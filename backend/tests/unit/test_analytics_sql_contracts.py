@@ -7,9 +7,11 @@ QUERY_DIR = Path(__file__).parents[2] / "app" / "analytics" / "queries"
 def read_query(name: str) -> str:
     return (QUERY_DIR / f"{name}.sql").read_text(encoding="utf-8").lower()
 
+
 def normalize_sql(sql: str) -> str:
     """Normalize SQL for formatting-insensitive contract assertions."""
     return re.sub(r"\s+", " ", sql).strip().lower()
+
 
 def test_activity_has_exact_window_and_date_spine() -> None:
     sql = read_query("activity")
@@ -48,4 +50,3 @@ def test_retention_excludes_incomplete_current_month() -> None:
     assert "date_trunc('month', as_of_date)::timestamp as end_exclusive" in sql
     assert "u.signup_date < b.current_month" in sql
     assert "e.event_time < b.end_exclusive" in sql
-
