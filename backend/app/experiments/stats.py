@@ -5,6 +5,7 @@ import numpy as np
 from scipy.stats import norm
 from statsmodels.stats.proportion import proportions_ztest
 from app.experiments.effect_size import binary_effect_size
+from app.experiments.power import power_diagnostics
 
 DEFAULT_ALPHA = 0.05
 
@@ -66,10 +67,23 @@ def analyze_binary(
         control_rate,
         treatment_rate,
     )
+
+    power = (
+        power_diagnostics(
+            control_rate,
+            control_n,
+            treatment_n,
+            alpha=alpha,
+        )
+        if 0 < control_rate < 1
+        else None
+    )
+
     counts = np.array(
         [treatment_conversions, control_conversions],
         dtype=float,
     )
+
     observations = np.array(
         [treatment_n, control_n],
         dtype=float,
@@ -106,4 +120,5 @@ def analyze_binary(
         "alpha": alpha,
         "significant": significant,
         "effect_size": effect_size,
+        "power": power,
     }

@@ -73,6 +73,7 @@ def test_zero_control_rate_has_no_relative_lift():
 
     assert result["control_rate"] == 0
     assert result["relative_lift"] is None
+    assert result["power"] is None
 
 
 @pytest.mark.parametrize(
