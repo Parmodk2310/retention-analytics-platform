@@ -59,9 +59,7 @@ export default function ExperimentDetail() {
             <p>{experiment.hypothesis}</p>
             <p>
               Primary metric:{' '}
-              <span className="font-medium text-foreground">
-                {experiment.primary_metric}
-              </span>
+              <span className="font-medium text-foreground">{result.metric.key}</span>
             </p>
           </div>
         )}
@@ -69,15 +67,13 @@ export default function ExperimentDetail() {
 
       {result.srm.detected && (
         <div className="rounded-xl border border-danger/30 bg-danger/10 p-4 text-sm">
-          <b>Sample Ratio Mismatch detected.</b> Do not trust the treatment conclusion until
-          assignment or instrumentation is investigated. p={result.srm.p_value.toPrecision(3)}
+          <b>Sample Ratio Mismatch detected.</b>{' '}
+          Do not trust the treatment conclusion until assignment or instrumentation is
+          investigated. p={result.srm.p_value.toPrecision(3)}
         </div>
       )}
 
-      <ExperimentIntelligence
-        result={result}
-        metricLabel={experiment?.primary_metric}
-      />
+      <ExperimentIntelligence result={result} />
     </div>
   )
 }
