@@ -13,9 +13,7 @@ from app.experiments.metrics import binary_conversion_counts
 from app.experiments.srm import sample_ratio_mismatch
 from app.experiments.stats import analyze_binary
 from app.schemas.experiment import ExperimentCreate
-
-DEFAULT_CONVERSION_EVENT = "purchase"
-DEFAULT_WINDOW_DAYS = 14
+from app.experiments.metric_contract import resolve_metric
 
 
 def _assignment_query(experiment_id: UUID, user_id: UUID):
@@ -118,12 +116,13 @@ async def results(
     experiment: Experiment,
 ) -> dict:
     variants = _variants(experiment)
+    metric = resolve_metric(experiment.primary_metric)
 
     counts = await binary_conversion_counts(
         db,
         str(experiment.id),
-        DEFAULT_CONVERSION_EVENT,
-        DEFAULT_WINDOW_DAYS,
+        metric.event_name,
+        metric.window_days,
     )
 
     observed = {variant: counts.get(variant, {}).get("n", 0) for variant in variants}
@@ -137,10 +136,14 @@ async def results(
         for variant in variants
     }
 
-    srm = sample_ratio_mismatch(observed, experiment.traffic_allocation)
+    srm = sample_ratio_mismatch(
+        observed,
+        experiment.traffic_allocation,
+    )
+
     analysis = None
 
-    if len(variants) == 2 and all(observed[variant] > 0 for variant in variants):
+    if len(variants) == 2 and all(observed[v] > 0 for v in variants):
         control, treatment = variants
 
         analysis = analyze_binary(

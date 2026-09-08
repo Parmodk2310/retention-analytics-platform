@@ -11,7 +11,7 @@ def payload():
         "key": "checkout_copy_v1",
         "name": "Checkout copy test",
         "hypothesis": "Treatment improves purchase conversion.",
-        "primary_metric": "purchase_conversion",
+        "primary_metric": "purchase_rate_14d",
         "variants": ["control", "treatment"],
         "traffic_allocation": {
             "control": 0.5,
