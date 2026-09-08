@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+
 import { analyticsKeys } from '@/lib/queryKeys'
 import { analyticsApi } from '@/services/analyticsApi'
 import { useUIStore } from '@/store/uiStore'
@@ -47,7 +48,8 @@ export function useFunnel() {
   })
 }
 
-export function useRetention(months = 12) {
+export function useRetention() {
+  const months = useUIStore((state) => state.cohortMonths)
   const channel = useUIStore((state) => state.channel)
 
   return useQuery({

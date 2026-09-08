@@ -11,10 +11,17 @@ RESET_ANALYTICS_DATA = os.getenv("RESET_ANALYTICS_DATA", "false").lower() in {
     "yes",
 }
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL_SYNC",
-    "postgresql+psycopg://retention:retention@localhost:5432/retention",
-).replace("postgresql+psycopg://", "postgresql://")
+DATABASE_URL_SYNC = os.getenv("DATABASE_URL_SYNC")
+
+if not DATABASE_URL_SYNC:
+    raise RuntimeError(
+        "DATABASE_URL_SYNC must be provided through the environment"
+    )
+
+DATABASE_URL = DATABASE_URL_SYNC.replace(
+    "postgresql+psycopg://",
+    "postgresql://",
+)
 
 # Pinning this via GENERATOR_END_DATE makes the dataset reproducible across days.
 END_DATE = date.fromisoformat(os.getenv("GENERATOR_END_DATE", date.today().isoformat()))

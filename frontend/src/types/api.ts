@@ -52,23 +52,113 @@ export type ChannelPerformance = {
   purchasers: number
   revenue: number
 }
+export type RiskBand =
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'critical'
+
+export type ChurnReason = {
+  feature: string
+  impact: number
+  direction:
+    | 'increases_risk'
+    | 'reduces_risk'
+}
 
 export type ChurnScore = {
   user_id: string
   external_id: string
   snapshot_date: string
   score: number
-  risk_band: 'low' | 'medium' | 'high' | 'critical'
+  risk_band: RiskBand
   model_version: string
-  reasons: string[]
+  reasons: ChurnReason[]
+  scored_at: string
+  acquisition_channel: string
+  device_type: string
+}
+
+export type ChurnSummary = {
+  snapshot_date: string | null
+  model_version: string | null
+  total_scored: number
+  average_score: number
+  high_risk_count: number
+  risk_bands: Record<RiskBand, number>
+}
+
+export type FeatureImportance = {
+  feature: string
+  importance: number
+}
+
+export type ModelDatasetMetadata = {
+  feature_window_days: number
+  label_window_days: number
+  snapshot_count: number
+}
+
+export type ModelSplit = {
+  rows: number
+  snapshot_count: number
+  start: string
+  end: string
+  churn_rate: number
+}
+
+export type ModelSplits = {
+  train: ModelSplit
+  validation: ModelSplit
+  test: ModelSplit
+}
+
+export type ModelCalibration = {
+  method: string
+  fit_rows: number
+  calibration_rows: number
+  calibration_snapshot: string
+}
+
+export type ModelRiskBands = {
+  method: string
+  thresholds: {
+    critical: number
+    high: number
+    medium: number
+  }
+}
+
+export type ModelLabelDrift = {
+  train_prevalence: number
+  validation_prevalence: number
+  test_prevalence: number
+  train_to_test_pp: number
 }
 
 export type ModelHealth = {
   model_version: string
   algorithm: string
   metrics: Record<string, number>
+  feature_names: string[]
   trained_at: string
-  artifact_uri: string
+  artifact_uri: string | null
+
+  dataset: ModelDatasetMetadata | null
+  splits: ModelSplits | null
+  calibration: ModelCalibration | null
+  risk_bands: ModelRiskBands | null
+  label_drift: ModelLabelDrift | null
+
+  global_feature_importance:
+    FeatureImportance[]
+
+  validation_candidates:
+    | Record<
+        string,
+        Record<string, number>
+      >
+    | null
 }
 
 export type Experiment = {

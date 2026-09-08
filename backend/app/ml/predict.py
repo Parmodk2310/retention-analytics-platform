@@ -13,21 +13,65 @@ def load_model():
 
 
 def load_metadata() -> dict:
-    path = download_latest("model_metadata.json")
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(download_latest("model_metadata.json").read_text(encoding="utf-8"))
 
 
 def predict_scores(model, frame: pd.DataFrame) -> np.ndarray:
-    return model.predict_proba(frame[FEATURES])[:, 1]
+    scores = np.asarray(model.predict_proba(frame[FEATURES])[:, 1], dtype=float)
+    if not np.isfinite(scores).all():
+        raise RuntimeError("Model produced non-finite churn probabilities")
+    return np.clip(scores, 0.0, 1.0)
 
 
-def risk_band(score: float) -> str:
-    if score >= 0.8:
+def risk_band(score: float, metadata: dict) -> str:
+    thresholds = metadata["risk_bands"]["thresholds"]
+    if score >= float(thresholds["critical"]):
         return "critical"
-    if score >= 0.6:
+    if score >= float(thresholds["high"]):
         return "high"
-    if score >= 0.35:
+    if score >= float(thresholds["medium"]):
         return "medium"
+    return "low"
+
+
+def risk_band_from_metadata(
+    score: float,
+    metadata: dict,
+) -> str:
+    """
+    Assign a risk band using thresholds learned from
+    validation data during training.
+    """
+
+    thresholds = metadata.get("risk_bands", {}).get("thresholds", {})
+
+    required = {
+        "critical",
+        "high",
+        "medium",
+    }
+
+    if not required.issubset(thresholds):
+        raise RuntimeError("Model metadata is missing risk-band thresholds.")
+
+    critical = float(thresholds["critical"])
+
+    high = float(thresholds["high"])
+
+    medium = float(thresholds["medium"])
+
+    if not (critical >= high >= medium):
+        raise RuntimeError("Risk-band thresholds are invalid.")
+
+    if score >= critical:
+        return "critical"
+
+    if score >= high:
+        return "high"
+
+    if score >= medium:
+        return "medium"
+
     return "low"
 
 
