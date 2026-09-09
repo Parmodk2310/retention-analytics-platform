@@ -206,9 +206,7 @@
 | `backend/Dockerfile` | Backend container | Multi-stage build: deps → runtime. Non-root user for security. Gunicorn with Uvicorn workers for production ASGI serving. |
 | `frontend/Dockerfile` | Frontend container | Multi-stage: Node build → Nginx serve. Security headers (X-Frame-Options, CSP). Gzip compression. |
 | `data-generator/Dockerfile` | Seed container | Runs `seed.py` once and exits. Used with Docker Compose profiles. |
-| `infrastructure/docker/Dockerfile.backend` | Optimized backend | Production-optimized with health checks, read-only filesystem, and security scanning. |
-| `infrastructure/docker/Dockerfile.frontend` | Optimized frontend | Nginx with hardened security headers and static asset caching. |
-| `infrastructure/docker/nginx.conf` | Reverse proxy | Routes `/api/` to backend, `/ws/` to WebSocket, serves static files, SPA fallback to index.html. |
+| `frontend/nginx.conf` | Frontend reverse proxy | Proxies `/api/` to FastAPI, serves production assets with caching, and provides the React Router SPA fallback. |
 
 ### 5.2 Terraform (AWS)
 

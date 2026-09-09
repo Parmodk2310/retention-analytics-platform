@@ -190,10 +190,13 @@ Primary files:
 
 - `backend/app/observability/metrics.py`
 - `backend/app/observability/tracing.py`
-- `backend/app/realtime/manager.py`
-- `backend/app/realtime/pubsub.py`
+- `backend/app/realtime/event_stream.py`
+- `backend/app/realtime/event_consumer.py`
+- `backend/app/realtime/event_freshness.py`
+- `backend/app/jobs/consume_events.py`
 - `backend/app/jobs/refresh_aggregates.py`
-- `frontend/src/hooks/useWebSocket.ts`
+- `backend/app/api/v1/system.py`
+- `backend/app/schemas/system.py`
 - `frontend/src/pages/Settings.tsx`
 - `frontend/src/services/systemApi.ts`
 - `monitoring/prometheus/*`
@@ -201,8 +204,8 @@ Primary files:
 - `monitoring/alertmanager/*`
 - `infrastructure/docker-compose.monitoring.yml`
 
-Exit criteria: metrics endpoint, dashboard/alerts, error tracing hooks, data freshness and optional
-real-time experiment updates.
+Exit criteria: durable Redis Streams ingestion, consumer-group recovery, idempotent PostgreSQL
+persistence, metrics endpoint, dashboards/alerts, error-tracing hooks and pipeline freshness.
 
 ## Phase 8 — AWS / IaC / CI-CD
 
