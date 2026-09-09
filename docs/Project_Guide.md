@@ -206,9 +206,7 @@
 | `backend/Dockerfile` | Backend container | Multi-stage build: deps → runtime. Non-root user for security. Gunicorn with Uvicorn workers for production ASGI serving. |
 | `frontend/Dockerfile` | Frontend container | Multi-stage: Node build → Nginx serve. Security headers (X-Frame-Options, CSP). Gzip compression. |
 | `data-generator/Dockerfile` | Seed container | Runs `seed.py` once and exits. Used with Docker Compose profiles. |
-| `infrastructure/docker/Dockerfile.backend` | Optimized backend | Production-optimized with health checks, read-only filesystem, and security scanning. |
-| `infrastructure/docker/Dockerfile.frontend` | Optimized frontend | Nginx with hardened security headers and static asset caching. |
-| `infrastructure/docker/nginx.conf` | Reverse proxy | Routes `/api/` to backend, `/ws/` to WebSocket, serves static files, SPA fallback to index.html. |
+| `frontend/nginx.conf` | Frontend reverse proxy | Proxies `/api/` to FastAPI, serves production assets with caching, and provides the React Router SPA fallback. |
 
 ### 5.2 Terraform (AWS)
 
@@ -232,12 +230,14 @@
 
 | File | Purpose | Operation |
 |------|---------|-----------|
-| `monitoring/prometheus/prometheus.yml` | Scraping config | Defines targets: backend `/metrics`, node-exporter, postgres-exporter, redis-exporter. 15s scrape interval. |
-| `monitoring/prometheus/rules/alerts.yml` | Alert rules | Critical alerts: HighErrorRate (&gt;5%), HighLatency (&gt;500ms), ModelDegradation (AUC&lt;0.75), ServiceDown. |
-| `monitoring/alertmanager/config.yml` | Alert routing | Routes critical alerts to PagerDuty, warnings to Slack. Email fallback for all alerts. |
-| `monitoring/grafana/provisioning/datasources/datasources.yml` | Data source config | Auto-registers Prometheus as default data source on Grafana startup. |
-| `monitoring/grafana/provisioning/dashboards/dashboards.yml` | Dashboard provider | Auto-loads dashboard JSON files from `/var/lib/grafana/dashboards`. |
-| `monitoring/grafana/dashboards/overview.json` | Main dashboard | Availability, request rate, latency percentiles (p50/p95/p99), active users, revenue by channel. |
+| `monitoring/prometheus/prometheus.yml` | Scraping config | Scrapes FastAPI `/metrics` and event-worker `:9101/metrics` every 15 seconds and forwards alerts to Alertmanager. |
+| `monitoring/prometheus/rules.yml` | Alert rules | Seven rules cover API error rate, p95 latency, worker availability, backlog, pending messages, DLQ activity, and stale persistence. |
+| `monitoring/alertmanager/config.yml` | Alert routing | Local Alertmanager routing configuration for Prometheus alerts. |
+| `monitoring/grafana/provisioning/datasources/prometheus.yml` | Data source config | Auto-registers Prometheus as the Grafana data source. |
+| `monitoring/grafana/provisioning/dashboards/dashboards.yml` | Dashboard provider | Auto-loads versioned dashboard JSON files from `/var/lib/grafana/dashboards`. |
+| `monitoring/grafana/dashboards/api-health.json` | API dashboard | API request, error, latency, and health signals. |
+| `monitoring/grafana/dashboards/product-health.json` | Product dashboard | Product and system operational signals. |
+| `monitoring/grafana/dashboards/event-pipeline.json` | Event pipeline dashboard | Backlog, pending, lag, freshness, persistence, and worker signals. |
 
 ---
 

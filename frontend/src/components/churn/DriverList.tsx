@@ -1,18 +1,7 @@
+import { featureLabel } from '@/lib/featureLabels'
 import type {
   FeatureImportance,
 } from '@/types/api'
-
-function displayFeature(
-  feature: string,
-) {
-  return feature
-    .replaceAll('_', ' ')
-    .replace(
-      /\b\w/g,
-      (letter) =>
-        letter.toUpperCase(),
-    )
-}
 
 export function DriverList({
   drivers,
@@ -60,8 +49,9 @@ export function DriverList({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-3">
                     <span className="truncate text-sm">
-                      {displayFeature(
+                      {featureLabel(
                         driver.feature,
+                        driver.label,
                       )}
                     </span>
 

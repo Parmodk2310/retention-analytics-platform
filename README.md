@@ -273,8 +273,8 @@ paying for it continuously:
 - Churn labels are defined in a future observation window to prevent target leakage.
 - Model preprocessing is persisted with the estimator to prevent training/serving skew.
 - A/B assignment and exposure are separate concepts.
-- WebSocket updates are optional presentation enhancements; PostgreSQL remains the source of truth.
-- Redis has explicit purposes: token state, rate limiting/cache and real-time pub/sub.
+- Durable event ingestion uses Redis Streams with consumer groups, retry/recovery, DLQ handling and idempotent PostgreSQL persistence.
+- Redis has explicit purposes: token state, rate limiting/cache and durable event-stream processing; PostgreSQL remains the source of truth.
 - Kubernetes is intentionally not used; ECS Fargate is sufficient for this portfolio workload.
 
 ## License / portfolio use

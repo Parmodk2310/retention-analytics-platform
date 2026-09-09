@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1 import analytics, auth, churn, events, experiments, health, system, websocket
+from app.api.v1 import analytics, auth, churn, events, experiments, health, system
 
 api_router = APIRouter()
 for router in [
@@ -11,6 +11,5 @@ for router in [
     churn.router,
     experiments.router,
     system.router,
-    websocket.router,
 ]:
     api_router.include_router(router)

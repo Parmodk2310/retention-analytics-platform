@@ -1,6 +1,7 @@
 import {
   RiskBadge,
 } from '@/components/churn/RiskBadge'
+import { featureLabel } from '@/lib/featureLabels'
 import type {
   ChurnReason,
   ChurnScore,
@@ -15,18 +16,6 @@ const percentageFormatter =
       maximumFractionDigits: 1,
     },
   )
-
-function displayFeature(
-  feature: string,
-) {
-  return feature
-    .replaceAll('_', ' ')
-    .replace(
-      /\b\w/g,
-      (letter) =>
-        letter.toUpperCase(),
-    )
-}
 
 function displayValue(
   value: string,
@@ -70,8 +59,9 @@ function ReasonChip({
       </span>
 
       <span>
-        {displayFeature(
+        {featureLabel(
           reason.feature,
+          reason.label,
         )}
       </span>
 

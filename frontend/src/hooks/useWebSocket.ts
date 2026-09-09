@@ -1,2 +1,0 @@
-import {useEffect,useState} from 'react';
-export function useWebSocket(path='/api/v1/ws/experiments'){const [message,setMessage]=useState<unknown>(null);useEffect(()=>{const protocol=location.protocol==='https:'?'wss':'ws';const ws=new WebSocket(`${protocol}://${location.host}${path}`);ws.onmessage=(e)=>{try{setMessage(JSON.parse(e.data))}catch{setMessage(e.data)}};return()=>ws.close()},[path]);return message}
