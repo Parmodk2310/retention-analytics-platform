@@ -1,0 +1,9 @@
+# False positives: experiment metric identifiers named "key".
+# These are product analytics metric keys, not credentials.
+
+b813296c38abc97deacd5ae3bdb67660e838139f:backend/tests/unit/test_experiment_results_schema.py:generic-api-key:13
+b813296c38abc97deacd5ae3bdb67660e838139f:backend/tests/unit/test_experiment_results_schema.py:generic-api-key:93
+cc3fa9ecbfd2e689ce176ed1a728ff5edc9c7702:backend/app/experiments/metric_contract.py:generic-api-key:20
+cc3fa9ecbfd2e689ce176ed1a728ff5edc9c7702:backend/app/experiments/metric_contract.py:generic-api-key:26
+cc3fa9ecbfd2e689ce176ed1a728ff5edc9c7702:backend/tests/unit/test_experiment_metric_contract.py:generic-api-key:24
+cc3fa9ecbfd2e689ce176ed1a728ff5edc9c7702:backend/tests/unit/test_experiment_metric_contract.py:generic-api-key:30

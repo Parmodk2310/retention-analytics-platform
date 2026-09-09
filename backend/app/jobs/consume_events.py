@@ -32,7 +32,8 @@ def _consumer_name() -> str:
 async def run() -> None:
     start_http_server(
         settings.EVENT_WORKER_METRICS_PORT,
-        addr="0.0.0.0",
+        # Prometheus scrapes this worker over the internal Docker network.
+        addr="0.0.0.0",  # nosec B104
     )
 
     redis = Redis.from_url(settings.REDIS_URL)
