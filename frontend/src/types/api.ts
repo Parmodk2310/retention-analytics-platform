@@ -301,3 +301,31 @@ export type ExperimentResults = {
   analysis: ExperimentAnalysis | null
   decision: ExperimentDecision
 }
+
+
+/* -------------------------------------------------------------------------- */
+/* System health                                                              */
+/* -------------------------------------------------------------------------- */
+
+export type SystemFeatures = {
+  realtime: boolean
+  churn_ml: boolean
+  experimentation: boolean
+}
+
+export type SystemInfo = {
+  environment: string
+  version: string
+  features: SystemFeatures
+}
+
+export type EventPipelineStatus = {
+  status: 'fresh' | 'stale' | 'unknown'
+  last_persisted_at: string | null
+  latest_event_time: string | null
+  last_stream_id: string | null
+  freshness_seconds: number | null
+  pending: number
+  lag: number
+  backlog: number
+}

@@ -100,3 +100,19 @@ export const churnKeys = {
       deviceType,
     ] as const,
 }
+
+export const systemKeys = {
+  all: ['system'] as const,
+
+  info: () =>
+    [
+      ...systemKeys.all,
+      'info',
+    ] as const,
+
+  eventPipeline: () =>
+    [
+      ...systemKeys.all,
+      'event-pipeline',
+    ] as const,
+}

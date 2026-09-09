@@ -108,4 +108,5 @@ async def pipeline_status(redis: Redis) -> dict:
         "freshness_seconds": freshness_seconds,
         "pending": pending,
         "lag": lag,
+        "backlog": backlog,
     }
