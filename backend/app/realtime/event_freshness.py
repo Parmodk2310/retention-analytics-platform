@@ -5,11 +5,13 @@ from redis.exceptions import ResponseError
 
 from app.core.config import settings
 from app.observability.metrics import (
+    EVENT_PIPELINE_BACKLOG,
     EVENT_PIPELINE_FRESHNESS_SECONDS,
     EVENT_PIPELINE_LAG,
     EVENT_PIPELINE_LAST_PERSISTED,
     EVENT_PIPELINE_PENDING,
 )
+
 from app.schemas.event import EventIn
 
 
@@ -80,7 +82,8 @@ async def pipeline_status(redis: Redis) -> dict:
 
     pending = int(group.get("pending", 0)) if group else 0
     lag = int(group.get("lag") or 0) if group else 0
-
+    backlog = pending + lag
+    EVENT_PIPELINE_BACKLOG.set(backlog)
     EVENT_PIPELINE_PENDING.set(pending)
     EVENT_PIPELINE_LAG.set(lag)
 

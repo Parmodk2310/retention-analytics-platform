@@ -37,7 +37,7 @@ groups:
           summary: "Retention event worker is unavailable"
 
       - alert: EventPipelineBacklogHigh
-        expr: retention_event_pipeline_backlog > 10000
+        expr: retention_event_pipeline_backlog{job="retention-event-worker"} > 10000
         for: 5m
         labels:
           severity: warning
@@ -45,7 +45,7 @@ groups:
           summary: "Event ingestion backlog remains high"
 
       - alert: EventPipelinePendingHigh
-        expr: retention_event_pipeline_pending > 100
+        expr: retention_event_pipeline_pending{job="retention-event-worker"} > 100
         for: 5m
         labels:
           severity: warning
@@ -55,7 +55,9 @@ groups:
       - alert: EventPipelineDeadLetters
         expr: >
           increase(
-            retention_event_pipeline_dead_letter_total[5m]
+            retention_event_pipeline_dead_letter_total{
+              job="retention-event-worker"
+            }[5m]
           ) > 0
         labels:
           severity: warning
@@ -64,12 +66,16 @@ groups:
 
       - alert: EventPipelineStale
         expr: >
-          retention_event_pipeline_backlog > 0
+          retention_event_pipeline_backlog{
+            job="retention-event-worker"
+          } > 0
           and
           (
             time()
             -
-            retention_event_pipeline_last_persisted_unixtime
+            retention_event_pipeline_last_persisted_unixtime{
+              job="retention-event-worker"
+            }
           ) > 60
         for: 2m
         labels:

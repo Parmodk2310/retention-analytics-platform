@@ -4,11 +4,7 @@ from redis.asyncio import Redis
 from app.api.deps import get_redis, verify_ingest_key
 from app.core.config import settings
 from app.core.rate_limit import limiter
-from app.realtime.event_stream import (
-    enqueue_events,
-    EventStreamBackpressure,
-    ensure_stream_capacity,
-)
+from app.realtime.event_stream import enqueue_events, EventStreamBackpressure
 from app.schemas.event import EnqueueResponse, EventBatch
 from app.services.event_service import deduplicate_events
 
@@ -28,9 +24,9 @@ async def batch(
 ):
     unique, duplicated = deduplicate_events(payload.events)
     try:
-        await ensure_stream_capacity(
+        stream_ids = await enqueue_events(
             redis,
-            len(unique),
+            unique,
         )
     except EventStreamBackpressure as exc:
         raise HTTPException(
@@ -42,7 +38,6 @@ async def batch(
             },
             headers={"Retry-After": str(settings.EVENT_STREAM_RETRY_AFTER_SECONDS)},
         ) from exc
-    stream_ids = await enqueue_events(redis, unique)
 
     return EnqueueResponse(
         queued=len(stream_ids),
