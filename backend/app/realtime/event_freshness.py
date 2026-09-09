@@ -4,6 +4,12 @@ from redis.asyncio import Redis
 from redis.exceptions import ResponseError
 
 from app.core.config import settings
+from app.observability.metrics import (
+    EVENT_PIPELINE_FRESHNESS_SECONDS,
+    EVENT_PIPELINE_LAG,
+    EVENT_PIPELINE_LAST_PERSISTED,
+    EVENT_PIPELINE_PENDING,
+)
 from app.schemas.event import EventIn
 
 
@@ -43,11 +49,13 @@ async def acknowledge_persisted(
         settings.EVENT_STREAM_GROUP,
         *message_ids,
     )
+
     await pipeline.execute()
 
 
 async def pipeline_status(redis: Redis) -> dict:
     raw = await redis.hgetall(settings.EVENT_PIPELINE_FRESHNESS_KEY)
+
     fields = {_text(key): _text(value) for key, value in raw.items()}
 
     try:
@@ -61,7 +69,7 @@ async def pipeline_status(redis: Redis) -> dict:
     )
 
     last_persisted = fields.get("last_persisted_at")
-    freshness_seconds = None
+    freshness_seconds: float | None = None
 
     if last_persisted:
         persisted_at = datetime.fromisoformat(last_persisted)
@@ -72,6 +80,15 @@ async def pipeline_status(redis: Redis) -> dict:
 
     pending = int(group.get("pending", 0)) if group else 0
     lag = int(group.get("lag") or 0) if group else 0
+
+    EVENT_PIPELINE_PENDING.set(pending)
+    EVENT_PIPELINE_LAG.set(lag)
+
+    if freshness_seconds is not None:
+        EVENT_PIPELINE_FRESHNESS_SECONDS.set(freshness_seconds)
+
+    if last_persisted:
+        EVENT_PIPELINE_LAST_PERSISTED.set(datetime.fromisoformat(last_persisted).timestamp())
 
     if freshness_seconds is None:
         status = "unknown"

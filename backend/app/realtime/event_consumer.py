@@ -1,14 +1,23 @@
 import json
 from datetime import UTC, datetime
+from time import perf_counter
 
 from redis.asyncio import Redis
 from redis.exceptions import ResponseError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.observability.metrics import (
+    EVENT_PIPELINE_BATCH_SIZE,
+    EVENT_PIPELINE_DEAD_LETTER,
+    EVENT_PIPELINE_DUPLICATES,
+    EVENT_PIPELINE_PERSIST_DURATION,
+    EVENT_PIPELINE_PERSISTED,
+    EVENT_PIPELINE_RECOVERED,
+)
+from app.realtime.event_freshness import acknowledge_persisted
 from app.schemas.event import EventBatch, EventIn
 from app.services.event_service import ingest
-from app.realtime.event_freshness import acknowledge_persisted
 
 
 def _text(value: bytes | str) -> str:
@@ -39,12 +48,18 @@ async def _dead_letter(
     await redis.xadd(
         settings.EVENT_STREAM_DLQ_NAME,
         {
-            "source_stream": settings.EVENT_STREAM_NAME,
+            "source_stream": (settings.EVENT_STREAM_NAME),
             "source_id": message_id,
             "reason": reason[:500],
             "failed_at": datetime.now(UTC).isoformat(),
-            "schema_version": fields.get("schema_version", ""),
-            "payload": fields.get("payload", ""),
+            "schema_version": fields.get(
+                "schema_version",
+                "",
+            ),
+            "payload": fields.get(
+                "payload",
+                "",
+            ),
         },
         maxlen=settings.EVENT_STREAM_DLQ_MAXLEN,
         approximate=True,
@@ -55,6 +70,8 @@ async def _dead_letter(
         settings.EVENT_STREAM_GROUP,
         message_id,
     )
+
+    EVENT_PIPELINE_DEAD_LETTER.inc()
 
 
 async def _process_messages(
@@ -71,8 +88,17 @@ async def _process_messages(
 
         try:
             event = _event(raw_fields)
-        except (ValueError, TypeError, json.JSONDecodeError) as exc:
-            await _dead_letter(redis, message_id, raw_fields, str(exc))
+        except (
+            ValueError,
+            TypeError,
+            json.JSONDecodeError,
+        ) as exc:
+            await _dead_letter(
+                redis,
+                message_id,
+                raw_fields,
+                str(exc),
+            )
             dead_lettered += 1
             continue
 
@@ -82,13 +108,17 @@ async def _process_messages(
     if not events:
         return 0, 0, dead_lettered
 
-    accepted, duplicated = await ingest(db, EventBatch(events=events))
+    started = perf_counter()
 
-    await redis.xack(
-        settings.EVENT_STREAM_NAME,
-        settings.EVENT_STREAM_GROUP,
-        *ids,
+    accepted, duplicated = await ingest(
+        db,
+        EventBatch(events=events),
     )
+
+    EVENT_PIPELINE_PERSIST_DURATION.observe(perf_counter() - started)
+    EVENT_PIPELINE_BATCH_SIZE.observe(len(events))
+    EVENT_PIPELINE_PERSISTED.inc(accepted)
+    EVENT_PIPELINE_DUPLICATES.inc(duplicated)
 
     await acknowledge_persisted(
         redis,
@@ -98,10 +128,16 @@ async def _process_messages(
         duplicated,
     )
 
-    return accepted, duplicated, dead_lettered
+    return (
+        accepted,
+        duplicated,
+        dead_lettered,
+    )
 
 
-async def ensure_consumer_group(redis: Redis) -> None:
+async def ensure_consumer_group(
+    redis: Redis,
+) -> None:
     try:
         await redis.xgroup_create(
             settings.EVENT_STREAM_NAME,
@@ -130,7 +166,11 @@ async def consume_once(
     if not response:
         return 0, 0, 0
 
-    return await _process_messages(redis, db, response[0][1])
+    return await _process_messages(
+        redis,
+        db,
+        response[0][1],
+    )
 
 
 async def recover_pending_once(
@@ -173,7 +213,7 @@ async def recover_pending_once(
                 redis,
                 message_id,
                 rows[0][1],
-                f"maximum deliveries exceeded: {deliveries}",
+                (f"maximum deliveries exceeded: {deliveries}"),
             )
         else:
             await redis.xack(
@@ -195,10 +235,17 @@ async def recover_pending_once(
         retry_ids,
     )
 
+    if claimed:
+        EVENT_PIPELINE_RECOVERED.inc(len(claimed))
+
     accepted, duplicated, invalid = await _process_messages(
         redis,
         db,
         claimed,
     )
 
-    return accepted, duplicated, dead_lettered + invalid
+    return (
+        accepted,
+        duplicated,
+        dead_lettered + invalid,
+    )

@@ -2,12 +2,77 @@ groups:
   - name: retention-api
     rules:
       - alert: ApiHighErrorRate
-        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total[5m])), 1) > 0.02
+        expr: >
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(http_requests_total[5m])), 1)
+          > 0.02
         for: 5m
-        labels: {severity: warning}
-        annotations: {summary: "API 5xx rate above 2%"}
+        labels:
+          severity: warning
+        annotations:
+          summary: "API 5xx rate above 2%"
+
       - alert: ApiHighP95Latency
-        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 0.5
+        expr: >
+          histogram_quantile(
+            0.95,
+            sum(rate(http_request_duration_seconds_bucket[5m]))
+            by (le)
+          ) > 0.5
         for: 5m
-        labels: {severity: warning}
-        annotations: {summary: "API p95 above 500 ms"}
+        labels:
+          severity: warning
+        annotations:
+          summary: "API p95 latency above 500 ms"
+
+  - name: retention-event-pipeline
+    rules:
+      - alert: EventWorkerDown
+        expr: up{job="retention-event-worker"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Retention event worker is unavailable"
+
+      - alert: EventPipelineBacklogHigh
+        expr: retention_event_pipeline_backlog > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event ingestion backlog remains high"
+
+      - alert: EventPipelinePendingHigh
+        expr: retention_event_pipeline_pending > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event worker pending queue is accumulating"
+
+      - alert: EventPipelineDeadLetters
+        expr: >
+          increase(
+            retention_event_pipeline_dead_letter_total[5m]
+          ) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Messages entered the event DLQ"
+
+      - alert: EventPipelineStale
+        expr: >
+          retention_event_pipeline_backlog > 0
+          and
+          (
+            time()
+            -
+            retention_event_pipeline_last_persisted_unixtime
+          ) > 60
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backlogged events are not being persisted"

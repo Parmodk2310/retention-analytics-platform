@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     EVENT_STREAM_GROUP: str = "retention-event-workers"
     EVENT_STREAM_BLOCK_MS: int = 5_000
     EVENT_STREAM_READ_COUNT: int = 100
+    EVENT_WORKER_METRICS_PORT: int = 9_101
 
     EVENT_STREAM_MAX_DELIVERIES: int = 5
     EVENT_STREAM_RETRY_IDLE_MS: int = 30_000

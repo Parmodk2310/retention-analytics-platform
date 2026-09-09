@@ -84,13 +84,15 @@ services:
       EVENT_PIPELINE_FRESHNESS_SLA_SECONDS: ${EVENT_PIPELINE_FRESHNESS_SLA_SECONDS:-60}
       EVENT_STREAM_BACKLOG_LIMIT: ${EVENT_STREAM_BACKLOG_LIMIT:-50000}
       EVENT_STREAM_RETRY_AFTER_SECONDS: ${EVENT_STREAM_RETRY_AFTER_SECONDS:-5}
+      EVENT_WORKER_METRICS_PORT: ${EVENT_WORKER_METRICS_PORT:-9101}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     restart: unless-stopped
-
+    expose:
+      - "9101"
     healthcheck:
       disable: true
 

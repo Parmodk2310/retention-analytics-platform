@@ -39,8 +39,17 @@ class FakeRedis:
     def __init__(self):
         self.pipe = FakePipeline()
 
+    async def xinfo_groups(self, stream: str):
+        assert stream == settings.EVENT_STREAM_NAME
+        return [
+            {
+                "name": settings.EVENT_STREAM_GROUP,
+                "pending": 0,
+                "lag": 0,
+            }
+        ]
+
     def pipeline(self, transaction=False):
-        assert transaction is False
         return self.pipe
 
 

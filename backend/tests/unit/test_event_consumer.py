@@ -161,7 +161,8 @@ async def test_pending_message_is_claimed_for_retry(monkeypatch):
 
     assert result == (1, 0, 0)
     redis.xclaim.assert_awaited_once()
-    redis.xack.assert_awaited_once()
+    acknowledge.assert_awaited_once()
+    redis.xack.assert_not_awaited()
 
 
 @pytest.mark.asyncio
