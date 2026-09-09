@@ -32,7 +32,7 @@ def _consumer_name() -> str:
 async def run() -> None:
     start_http_server(
         settings.EVENT_WORKER_METRICS_PORT,
-        addr="0.0.0.0",
+        addr="0.0.0.0",  # nosec B104 - container-internal Prometheus endpoint
     )
 
     redis = Redis.from_url(settings.REDIS_URL)
