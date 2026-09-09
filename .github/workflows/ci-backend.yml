@@ -7,7 +7,14 @@ permissions: {contents: read}
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults: {run: {working-directory: backend}}
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://ci_user:ci_password@localhost:5432/retention_test
+      DATABASE_URL_SYNC: postgresql+psycopg://ci_user:ci_password@localhost:5432/retention_test
+
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

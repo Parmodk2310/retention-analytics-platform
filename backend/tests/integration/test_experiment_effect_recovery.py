@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from sqlalchemy import select
 
@@ -5,6 +7,12 @@ from app.db.models import Experiment
 from app.db.session import AsyncSessionLocal
 from app.schemas.experiment import ExperimentResults
 from app.services.experiment_service import results
+
+pytestmark = pytest.mark.skipif(
+    not os.getenv("TEST_DATABASE_URL"),
+    reason="set TEST_DATABASE_URL to run integration tests",
+)
+
 
 EXPERIMENT_KEY = "onboarding_v2"
 EXPECTED_METRIC = "purchase_rate_14d"
