@@ -184,7 +184,7 @@ Primary files:
 Exit criteria: Argon2 credentials, short-lived JWTs, HttpOnly refresh tokens, token rotation,
 protected APIs, event-ingestion key, rate limiting, request validation and secret scanning.
 
-## Phase 7 — Realtime / observability / polish
+## Phase 7 — Realtime / observability / polish ✅
 
 Primary files:
 
@@ -206,6 +206,26 @@ Primary files:
 
 Exit criteria: durable Redis Streams ingestion, consumer-group recovery, idempotent PostgreSQL
 persistence, metrics endpoint, dashboards/alerts, error-tracing hooks and pipeline freshness.
+
+Phase 7 freeze validation:
+
+- backend: 167 passed, 4 skipped
+- frontend: 8 tests passed
+- Gitleaks: passed
+- pip-audit: no known vulnerabilities
+- npm audit: 0 vulnerabilities
+- Prometheus targets: API and event worker healthy
+- Prometheus alert rules: 7/7 healthy
+- Grafana health: database OK
+- Alertmanager readiness: HTTP 200
+- event pipeline: backlog 0, pending 0 and consumer lag 0 during runtime verification
+
+Product polish completed in this phase:
+
+- typed system-health and event-pipeline contracts
+- recruiter-facing System Health UI
+- daily revenue visualization for ranges up to 90 days and monthly visualization for longer ranges
+- human-readable global and local churn/TreeSHAP feature labels
 
 ## Phase 8 — AWS / IaC / CI-CD
 
