@@ -194,14 +194,20 @@ aws sts get-caller-identity
 
 Never share AWS credentials, database passwords or JWT secrets.
 
-### 2. Bootstrap infrastructure
+### 2. Review and bootstrap infrastructure
+
+> **Cost safety:** This production stack creates chargeable AWS resources and requires real DNS, ACM certificate and remote-state values. Keep `AWS_DEPLOY_ENABLED=false` and do not apply without an approved budget.
 
 ```bash
 cd infrastructure/terraform
-terraform init
-cp environments/production/terraform.tfvars.example terraform.tfvars
-terraform plan
-terraform apply
+cp backend.hcl.example backend.hcl
+terraform init -backend-config=backend.hcl
+cp production.tfvars.example terraform.tfvars
+terraform fmt -check -recursive
+terraform validate
+terraform plan -var-file=terraform.tfvars -out=production.tfplan
+# Run only after reviewing and approving the saved plan:
+# terraform apply production.tfplan
 ```
 
 The default Terraform configuration keeps the ECS service desired count at `0` so infrastructure

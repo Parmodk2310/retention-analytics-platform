@@ -1,45 +1,262 @@
 name: Deploy Production AWS
+
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
+
 permissions:
   contents: read
   id-token: write
-concurrency: {group: production, cancel-in-progress: false}
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
 jobs:
   deploy-backend:
+    name: Deploy backend and event worker
+    if: ${{ vars.AWS_DEPLOY_ENABLED == 'true' }}
     runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-      - uses: aws-actions/amazon-ecr-login@v2
-      - name: Build and push backend
+
+      - name: Sign in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
+
+      - name: Validate deployment variables
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          BACKEND_ECR_REPOSITORY: ${{ vars.BACKEND_ECR_REPOSITORY }}
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+          EVENT_WORKER_SERVICE: ${{ vars.EVENT_WORKER_SERVICE }}
+          BACKEND_TASK_DEFINITION: ${{ vars.BACKEND_TASK_DEFINITION }}
+          EVENT_WORKER_TASK_DEFINITION: ${{ vars.EVENT_WORKER_TASK_DEFINITION }}
+        run: |
+          set -euo pipefail
+
+          for name in             AWS_REGION             BACKEND_ECR_REPOSITORY             ECS_CLUSTER             ECS_SERVICE             EVENT_WORKER_SERVICE             BACKEND_TASK_DEFINITION             EVENT_WORKER_TASK_DEFINITION
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Missing required GitHub variable: $name"
+              exit 1
+            fi
+          done
+
+      - name: Build or reuse immutable backend image
+        id: image
         env:
           REPO: ${{ vars.BACKEND_ECR_REPOSITORY }}
         run: |
-          ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+          set -euo pipefail
+
+          ACCOUNT="$(aws sts get-caller-identity --query Account --output text)"
           REGISTRY="$ACCOUNT.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
-          docker build -t "$REGISTRY/$REPO:${GITHUB_SHA}" -t "$REGISTRY/$REPO:latest" backend
-          docker push "$REGISTRY/$REPO:${GITHUB_SHA}"
-          docker push "$REGISTRY/$REPO:latest"
-      - name: Force ECS rollout
-        run: aws ecs update-service --cluster "${{ vars.ECS_CLUSTER }}" --service "${{ vars.ECS_SERVICE }}" --force-new-deployment
+          TAGGED_IMAGE="$REGISTRY/$REPO:${GITHUB_SHA}"
+
+          if aws ecr describe-images \
+            --repository-name "$REPO" \
+            --image-ids "imageTag=${GITHUB_SHA}" \
+            >/dev/null 2>&1
+          then
+            echo "Immutable image already exists; reusing ${GITHUB_SHA}."
+          else
+            echo "Building immutable image ${GITHUB_SHA}."
+            docker build --pull --tag "$TAGGED_IMAGE" backend
+            docker push "$TAGGED_IMAGE"
+          fi
+
+          DIGEST="$(
+            aws ecr describe-images \
+              --repository-name "$REPO" \
+              --image-ids "imageTag=${GITHUB_SHA}" \
+              --query 'imageDetails[0].imageDigest' \
+              --output text
+          )"
+
+          if [[ "$DIGEST" != sha256:* ]]; then
+            echo "::error::Could not resolve ECR image digest for ${GITHUB_SHA}"
+            exit 1
+          fi
+
+          IMAGE_URI="$REGISTRY/$REPO@$DIGEST"
+
+          echo "Resolved deployment image: $IMAGE_URI"
+          echo "image_uri=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+          echo "image_digest=$DIGEST" >> "$GITHUB_OUTPUT"
+
+      - name: Register immutable ECS task revisions
+        id: tasks
+        env:
+          IMAGE_URI: ${{ steps.image.outputs.image_uri }}
+          BACKEND_TASK_DEFINITION: ${{ vars.BACKEND_TASK_DEFINITION }}
+          EVENT_WORKER_TASK_DEFINITION: ${{ vars.EVENT_WORKER_TASK_DEFINITION }}
+        run: |
+          set -euo pipefail
+
+          command -v jq >/dev/null
+
+          register_revision() {
+            family="$1"
+            container_name="$2"
+            prefix="$3"
+
+            current="/tmp/${prefix}-current.json"
+            next="/tmp/${prefix}-next.json"
+
+            aws ecs describe-task-definition               --task-definition "$family"               --query taskDefinition               --output json > "$current"
+
+            jq               --arg image "$IMAGE_URI"               --arg container "$container_name"               '
+              if ([.containerDefinitions[] | select(.name == $container)] | length) != 1
+              then error("expected exactly one container named " + $container)
+              else
+                del(
+                  .taskDefinitionArn,
+                  .revision,
+                  .status,
+                  .requiresAttributes,
+                  .compatibilities,
+                  .registeredAt,
+                  .registeredBy,
+                  .deregisteredAt
+                )
+                | .containerDefinitions |= map(
+                    if .name == $container
+                    then .image = $image
+                    else .
+                    end
+                  )
+              end
+              '               "$current" > "$next"
+
+            aws ecs register-task-definition               --cli-input-json "file://$next"               --query 'taskDefinition.taskDefinitionArn'               --output text
+          }
+
+          BACKEND_ARN="$(
+            register_revision               "$BACKEND_TASK_DEFINITION"               "backend"               "backend"
+          )"
+
+          WORKER_ARN="$(
+            register_revision               "$EVENT_WORKER_TASK_DEFINITION"               "event-worker"               "event-worker"
+          )"
+
+          echo "backend_task_arn=$BACKEND_ARN" >> "$GITHUB_OUTPUT"
+          echo "worker_task_arn=$WORKER_ARN" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy backend and event worker
+        env:
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+          EVENT_WORKER_SERVICE: ${{ vars.EVENT_WORKER_SERVICE }}
+          BACKEND_TASK_ARN: ${{ steps.tasks.outputs.backend_task_arn }}
+          WORKER_TASK_ARN: ${{ steps.tasks.outputs.worker_task_arn }}
+        run: |
+          set -euo pipefail
+
+          aws ecs update-service             --cluster "$ECS_CLUSTER"             --service "$ECS_SERVICE"             --task-definition "$BACKEND_TASK_ARN"             --output json >/dev/null
+
+          aws ecs update-service             --cluster "$ECS_CLUSTER"             --service "$EVENT_WORKER_SERVICE"             --task-definition "$WORKER_TASK_ARN"             --output json >/dev/null
+
+      - name: Wait for ECS services to stabilize
+        env:
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+          EVENT_WORKER_SERVICE: ${{ vars.EVENT_WORKER_SERVICE }}
+        run: |
+          set -euo pipefail
+
+          timeout 15m aws ecs wait services-stable             --cluster "$ECS_CLUSTER"             --services "$ECS_SERVICE" "$EVENT_WORKER_SERVICE"
+
+      - name: Verify deployed image
+        env:
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+          EVENT_WORKER_SERVICE: ${{ vars.EVENT_WORKER_SERVICE }}
+          EXPECTED_IMAGE: ${{ steps.image.outputs.image_uri }}
+        run: |
+          set -euo pipefail
+
+          verify_service() {
+            service="$1"
+            container="$2"
+
+            task_definition="$(
+              aws ecs describe-services                 --cluster "$ECS_CLUSTER"                 --services "$service"                 --query 'services[0].taskDefinition'                 --output text
+            )"
+
+            actual_image="$(
+              aws ecs describe-task-definition                 --task-definition "$task_definition"                 --query "taskDefinition.containerDefinitions[?name=='$container'].image | [0]"                 --output text
+            )"
+
+            echo "$service -> $actual_image"
+
+            if [ "$actual_image" != "$EXPECTED_IMAGE" ]; then
+              echo "::error::Unexpected image on $service"
+              exit 1
+            fi
+          }
+
+          verify_service "$ECS_SERVICE" "backend"
+          verify_service "$EVENT_WORKER_SERVICE" "event-worker"
+
   deploy-frontend:
+    name: Deploy frontend
+    if: ${{ vars.AWS_DEPLOY_ENABLED == 'true' }}
+    needs:
+      - deploy-backend
     runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: {node-version: '22'}
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-      - working-directory: frontend
-        run: npm install && npm run build
-        env: {VITE_API_BASE_URL: /api/v1}
-      - run: aws s3 sync frontend/dist "s3://${{ vars.FRONTEND_BUCKET }}" --delete
-      - run: aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths '/*'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: /api/v1
+        run: npm run build
+
+      - name: Upload frontend
+        run: |
+          set -euo pipefail
+          aws s3 sync             frontend/dist             "s3://${{ vars.FRONTEND_BUCKET }}"             --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          set -euo pipefail
+          aws cloudfront create-invalidation             --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}"             --paths '/*'
