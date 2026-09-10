@@ -24,6 +24,7 @@ Use the shortest path that matches your goal.
 - [API latency runbook](runbooks/api-latency.md)
 - [Threat model](security/threat-model.md)
 - [OCI deployment](../infrastructure/oci/README.md)
+- [Public release checklist](public-release-checklist.md)
 
 ## Delivery history
 
