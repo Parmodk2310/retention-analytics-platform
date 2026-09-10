@@ -1,152 +1,96 @@
-# User Retention & Experimentation Analytics Platform
+# RetentionOS — Retention Analytics & Experimentation Platform
 
-Production-style product analytics project for retention, funnel analysis, cohort retention,
-churn prediction, and A/B experimentation. The repository is organized as a monorepo and is
-intended to demonstrate the engineering depth expected from a Product Data Scientist / ML
-Engineer with roughly 2–3 years of practical experience.
+RetentionOS is a production-style product analytics system that connects behavioral event
+ingestion, SQL metrics, churn modeling, experimentation, and operational monitoring in one
+reviewable monorepo. It is a portfolio case study for product data science and ML engineering—not
+a hosted SaaS product or a claim of production customer usage.
 
-## Core capabilities
+## What this project demonstrates
 
-- 50,000-user / 1.2M+ event synthetic product dataset
-- DAU / WAU / MAU / stickiness / revenue analytics
-- Ordered Visit → Signup → Search → Add-to-Cart → Checkout → Purchase funnel
-- Monthly cohort retention with channel segmentation
-- Leakage-safe churn dataset construction using historical feature windows and future labels
-- Logistic Regression baseline + XGBoost candidate model
-- ROC-AUC, PR-AUC, F1, Brier score and Lift@10%
-- Persisted churn scores and model metadata
-- Deterministic experiment assignment with SHA-256 bucketing
-- Exposure logging, SRM detection, Z-tests, confidence intervals, power analysis and CUPED helper
-- React + TypeScript product dashboard
-- JWT access tokens + HttpOnly refresh-token rotation
-- Rate limiting, strict validation and protected analytics APIs
-- Prometheus / Grafana / Sentry / CloudWatch-ready observability
-- Docker Compose local environment
-- Terraform AWS deployment to ECS Fargate, RDS, ElastiCache, S3 and CloudFront
-- GitHub Actions CI/security/deployment workflows
+| Area | Implementation |
+|---|---|
+| Product analytics | DAU/WAU/MAU, stickiness, ordered funnel, cohort retention, revenue and channel performance |
+| Churn ML | Leakage-safe snapshots, temporal validation, calibration, persisted scores, model lineage and explanations |
+| Experimentation | Deterministic assignment, exposure logging, SRM checks, confidence intervals, power and decision rules |
+| Event reliability | Redis Streams, consumer groups, retries, pending recovery, DLQ and idempotent PostgreSQL persistence |
+| Security | Argon2 passwords, short-lived JWTs, rotated HttpOnly refresh cookies, rate limits and ingest-key protection |
+| Operations | Health probes, Prometheus metrics, Grafana dashboards, Alertmanager rules and structured logs |
+| Delivery | Docker Compose, immutable CI references, security scanning, AWS Terraform and a gated OCI demo path |
 
-## Architecture
+The synthetic portfolio dataset is configured for up to 50,000 users and approximately 1.2M
+events. Synthetic data provides reproducible channel, churn and treatment effects without exposing
+customer information.
 
-```text
-Browser
-  |
-  v
-CloudFront --------------------> private S3 frontend
-  |
-  | /api/*
-  v
-Application Load Balancer
-  |
-  v
-ECS Fargate / FastAPI
-  |             |             |
-  v             v             v
-RDS          ElastiCache    S3 model artifacts
-PostgreSQL   Redis/Valkey
-  |
-  +--> SQL analytics
-  +--> experiment engine
-  +--> churn feature snapshots / scores
+## Architecture at a glance
+
+```mermaid
+flowchart TD
+    Browser --> Gateway["Nginx or Caddy"]
+    Gateway --> API["FastAPI API"]
+    API --> Postgres["PostgreSQL source of truth"]
+    API --> Redis["Redis tokens, limits and streams"]
+    Redis --> Worker["Event consumer"]
+    Worker --> Postgres
+    Jobs["Offline ML jobs"] --> Postgres
 ```
 
-## Repository phases
+Production requests never retrain the model. Offline jobs create versioned artifacts and persist
+user-level churn scores; the API reads those persisted results.
 
-See [`docs/PHASES.md`](docs/PHASES.md) for the exact Phase 0 → Phase 8 file mapping.
+See [system design](docs/architecture/system-design.md), [data model](docs/architecture/data-model.md),
+[event pipeline](docs/architecture/event-pipeline.md), and [ML design](docs/architecture/ml-design.md).
 
-## Local requirements
+## Current delivery status
 
-- Docker Desktop
-- Git
-- Python 3.12 (only if running backend outside Docker)
-- Node.js 22 (only if running frontend outside Docker)
-- AWS CLI v2 and Terraform 1.7+ for AWS deployment
+| Target | Status |
+|---|---|
+| Local Docker environment | Implemented and smoke-tested |
+| GitHub CI and security checks | Passing on pull request #28 |
+| AWS architecture | Terraform validated; deployment intentionally gated and not applied |
+| OCI portfolio environment | Stack and runbooks complete; live VM pending Singapore A1 capacity |
+| Public live URL | Not available yet—do not represent the project as live |
 
-## Phase 0: local bootstrap
+`AWS_DEPLOY_ENABLED=false` remains the intentional safety gate until real Terraform outputs,
+DNS, certificates and an approved budget exist.
+
+## Quick start
+
+Requirements: Docker with Compose v2 and Git. Python 3.12 and Node.js 22 are needed only when
+running services directly on the host.
 
 ```bash
+git clone https://github.com/Parmodk2310/retention-analytics-platform.git
+cd retention-analytics-platform
 cp .env.example .env
-# Set a strong SECRET_KEY before any shared deployment.
-
+# Replace development placeholders before sharing the environment.
 docker compose up -d postgres redis
-docker compose build
 docker compose run --rm backend alembic upgrade head
-docker compose up -d backend frontend
+docker compose up -d backend event-worker frontend
 ```
 
 Open:
 
-- Frontend: http://localhost:8080
-- FastAPI docs: http://localhost:8000/docs
-- Liveness: http://localhost:8000/api/v1/health/live
-- Readiness: http://localhost:8000/api/v1/health/ready
-- Prometheus metrics: http://localhost:8000/metrics
+- frontend: <http://localhost:8080>
+- OpenAPI UI: <http://localhost:8000/docs>
+- liveness: <http://localhost:8000/api/v1/health/live>
+- readiness: <http://localhost:8000/api/v1/health/ready>
+- metrics: <http://localhost:8000/metrics>
 
-## Seed the portfolio dataset
-
-For the first development run use smaller values in `.env`:
-
-```env
-GENERATOR_USERS=5000
-TARGET_EVENTS=100000
-GENERATOR_SEED=42
-```
-
-Then:
+Generate a small local dataset:
 
 ```bash
 docker compose --profile tools run --rm data-generator python seed.py
 docker compose --profile tools run --rm data-generator python validate.py
 ```
 
-After the application is healthy, switch to:
-
-```env
-GENERATOR_USERS=50000
-TARGET_EVENTS=1200000
-GENERATOR_SEED=42
-```
-
-and seed again against a clean database.
-
-## Train and score the churn model
+Train and persist churn scores:
 
 ```bash
 docker compose run --rm backend python -m app.ml.train
 docker compose run --rm backend python -m app.jobs.score_churn
 ```
 
-The training pipeline builds leakage-safe snapshots, compares a Logistic Regression baseline
-with XGBoost, stores the selected model artifact, records model metrics in `model_runs`, and the
-scoring job persists user-level scores in `churn_scores`.
-
-## Experiment workflow
-
-1. Create an experiment through `/api/v1/experiments`.
-2. Eligible users are deterministically assigned using SHA-256 bucketing.
-3. Exposure is logged separately from assignment.
-4. Outcomes are measured only after exposure and within the configured conversion window.
-5. Sample-ratio mismatch is checked before inference.
-6. Binary treatment metrics use a two-sided proportions Z-test.
-7. The API returns confidence intervals, absolute/relative lift, significance and a decision.
-
-## Security notes
-
-- Access tokens are short-lived and kept in frontend memory.
-- Refresh tokens are HttpOnly + SameSite cookies and are rotated/revoked through Redis.
-- Passwords use Argon2 via `pwdlib`.
-- The event ingestion endpoint uses `X-Event-Ingest-Key` outside local development.
-- Event name, time, batch size, revenue and properties payload size are validated.
-- Analytics/churn/experiment APIs require authentication.
-- SQL uses bound parameters; never interpolate user input into SQL strings.
-- AWS stores application secrets in Secrets Manager.
-- RDS and ElastiCache are private and accept traffic only from the ECS security group.
-- GitHub deployment should use OIDC, not permanent AWS access keys.
-
-See [`SECURITY.md`](SECURITY.md) and [`docs/security/threat-model.md`](docs/security/threat-model.md).
-
-## Test commands
-
-Backend:
+## Quality gates
 
 ```bash
 cd backend
@@ -158,132 +102,50 @@ bandit -q -r app -x app/ml/artifacts
 pip-audit -r requirements.txt
 ```
 
-Frontend:
-
 ```bash
 cd frontend
-npm install
+npm ci
 npm run lint
 npm test
 npm run build
 ```
 
-`package-lock.json` is intentionally generated by the first `npm install` in an internet-connected
-development environment and should then be committed. The generated source bundle contains all
-hand-authored frontend source/configuration files.
+Pull requests run backend tests, frontend checks, Gitleaks and Trivy. Passing CI does not imply
+that cloud infrastructure was created.
 
-## Monitoring
+## Deployment paths
 
-Start the optional local monitoring stack:
+- [OCI live-demo runbook](infrastructure/oci/README.md): cost-aware single-node ARM64 deployment
+  with Caddy HTTPS, currently waiting for Always Free A1 capacity.
+- [AWS Terraform](infrastructure/terraform/): reference architecture using ECS Fargate, RDS,
+  ElastiCache, ALB, S3 and CloudFront. Review a saved plan before any apply.
+- [Terraform security decisions](infrastructure/terraform/SECURITY.md): scanner exceptions and
+  compensating controls.
 
-```bash
-docker compose -f infrastructure/docker-compose.monitoring.yml up -d
-```
+## Documentation
 
-Prometheus alert rules include API latency/error conditions and the project exposes application
-metrics from FastAPI. Grafana provisioning and dashboard JSON are under `monitoring/grafana`.
+Start with the [documentation index](docs/README.md). Key reviewer paths:
 
-## AWS deployment
+- [Portfolio review guide](docs/portfolio-review.md)
+- [API contracts](docs/api-contracts/README.md)
+- [Architecture decisions](docs/architecture-decisions/)
+- [Operational runbooks](docs/runbooks/)
+- [Threat model](docs/security/threat-model.md)
+- [Implementation phases](docs/PHASES.md)
+- [Repository guide](docs/Project_Guide.md)
 
-### 1. Authenticate
+## Engineering trade-offs
 
-```bash
-aws configure
-aws sts get-caller-identity
-```
+- PostgreSQL is the source of truth; Redis is an operational accelerator and durable transport.
+- Metrics remain SQL-first so definitions and query plans are inspectable.
+- Assignment and exposure are separate to prevent never-exposed users from biasing experiments.
+- Churn labels use a future observation window to prevent target leakage.
+- AWS shows a scalable target; OCI provides a cost-aware demo path.
+- Kubernetes is intentionally excluded because it adds operational surface without improving this
+  portfolio workload.
 
-Never share AWS credentials, database passwords or JWT secrets.
+## Responsible use
 
-### 2. Review and bootstrap infrastructure
-
-> **Cost safety:** This production stack creates chargeable AWS resources and requires real DNS, ACM certificate and remote-state values. Keep `AWS_DEPLOY_ENABLED=false` and do not apply without an approved budget.
-
-```bash
-cd infrastructure/terraform
-cp backend.hcl.example backend.hcl
-terraform init -backend-config=backend.hcl
-cp production.tfvars.example terraform.tfvars
-terraform fmt -check -recursive
-terraform validate
-terraform plan -var-file=terraform.tfvars -out=production.tfplan
-# Run only after reviewing and approving the saved plan:
-# terraform apply production.tfplan
-```
-
-The default Terraform configuration keeps the ECS service desired count at `0` so infrastructure
-can be created before the first container image exists.
-
-### 3. Push images
-
-Get Terraform outputs:
-
-```bash
-terraform output
-```
-
-Login to ECR, build and push `backend` and `data-generator` images using the repository URLs from
-Terraform outputs.
-
-### 4. Database migration and first data/model run
-
-Run one-off ECS tasks using the generated backend/generator task definitions:
-
-- `alembic upgrade head`
-- `python seed.py`
-- `python validate.py`
-- `python -m app.ml.train`
-- `python -m app.jobs.score_churn`
-
-### 5. Start API service
-
-Set:
-
-```hcl
-ecs_desired_count = 1
-enable_scheduled_jobs = true
-```
-
-and apply Terraform again.
-
-### 6. Deploy frontend
-
-```bash
-cd frontend
-npm install
-npm run build
-aws s3 sync dist/ s3://<terraform-frontend-bucket> --delete
-aws cloudfront create-invalidation --distribution-id <distribution-id> --paths '/*'
-```
-
-The CloudFront function rewrites SPA navigation only; `/api/*` errors are never rewritten to
-`index.html`.
-
-## Cost-aware portfolio deployment
-
-The default Terraform values intentionally use small single-instance resources for a portfolio
-environment. For an enterprise architecture discussion, document the scale-up path rather than
-paying for it continuously:
-
-- 2+ ECS tasks across AZs
-- RDS Multi-AZ
-- ElastiCache replication/failover
-- ACM/custom domain
-- WAF
-- private ECS subnets + NAT/VPC endpoints
-- autoscaling and stronger backup/retention policies
-
-## Important engineering choices
-
-- Synthetic data is the primary demo dataset because it provides known retention/channel/treatment
-  ground truth.
-- Churn labels are defined in a future observation window to prevent target leakage.
-- Model preprocessing is persisted with the estimator to prevent training/serving skew.
-- A/B assignment and exposure are separate concepts.
-- Durable event ingestion uses Redis Streams with consumer groups, retry/recovery, DLQ handling and idempotent PostgreSQL persistence.
-- Redis has explicit purposes: token state, rate limiting/cache and durable event-stream processing; PostgreSQL remains the source of truth.
-- Kubernetes is intentionally not used; ECS Fargate is sufficient for this portfolio workload.
-
-## License / portfolio use
-
-This repository is intended as a portfolio/reference implementation. Review AWS cost, security,
-privacy and compliance requirements before adapting it for real customer data.
+This repository uses synthetic data and is intended for portfolio and reference use. Before using
+real customer data, add organization-specific privacy, compliance, backup, incident-response and
+data-retention controls.
