@@ -1,0 +1,26 @@
+aws_region   = "ap-south-1"
+project_name = "retention-analytics"
+environment  = "production"
+
+vpc_cidr = "10.42.0.0/16"
+
+backend_cpu    = 512
+backend_memory = 1024
+
+# Keep both at zero while bootstrapping ECR and ECS task definitions.
+# Set to 1 after an immutable Git-SHA backend image is available.
+ecs_desired_count          = 0
+event_worker_desired_count = 0
+
+backend_image_tag   = "bootstrap"
+generator_image_tag = "bootstrap"
+
+db_instance_class = "db.t4g.micro"
+redis_node_type    = "cache.t4g.micro"
+
+enable_scheduled_jobs = false
+
+# Production HTTPS origin configuration.
+api_domain_name    = "api.example.com"
+route53_zone_id    = "YOUR_ROUTE53_ZONE_ID"
+alb_certificate_arn = "arn:aws:acm:REGION:ACCOUNT_ID:certificate/CERTIFICATE_ID"

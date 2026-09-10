@@ -8,7 +8,7 @@ data "aws_cloudfront_origin_request_policy" "all_except_host" {
 
 resource "aws_s3_bucket" "site" {
   bucket_prefix = "${var.name}-web-"
-  force_destroy  = true
+  force_destroy = false
 }
 
 resource "aws_s3_bucket_public_access_block" "site" {
@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "this" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
@@ -104,14 +104,14 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "/api/*"
-    target_origin_id       = var.alb_origin_id
-    viewer_protocol_policy = "redirect-to-https"
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
-    cache_policy_id        = data.aws_cloudfront_cache_policy.disabled.id
+    path_pattern             = "/api/*"
+    target_origin_id         = var.alb_origin_id
+    viewer_protocol_policy   = "redirect-to-https"
+    allowed_methods          = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods           = ["GET", "HEAD"]
+    cache_policy_id          = data.aws_cloudfront_cache_policy.disabled.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_except_host.id
-    compress               = true
+    compress                 = true
   }
 
   restrictions {

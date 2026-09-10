@@ -1,13 +1,364 @@
-data "aws_caller_identity" "current" {}
-resource "aws_cloudwatch_log_group" "api" { name="/ecs/${var.name}/api";retention_in_days=14 }
-resource "aws_cloudwatch_log_group" "generator" { name="/ecs/${var.name}/generator";retention_in_days=7 }
-resource "aws_ecs_cluster" "this" { name=var.name;setting { name="containerInsights";value="enabled" } }
-resource "aws_iam_role" "execution" { name="${var.name}-ecs-execution";assume_role_policy=jsonencode({Version="2012-10-17",Statement=[{Effect="Allow",Principal={Service="ecs-tasks.amazonaws.com"},Action="sts:AssumeRole"}]}) }
-resource "aws_iam_role_policy_attachment" "execution" { role=aws_iam_role.execution.name;policy_arn="arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy" }
-resource "aws_iam_role_policy" "secret" { name="app-secret";role=aws_iam_role.execution.id;policy=jsonencode({Version="2012-10-17",Statement=[{Effect="Allow",Action=["secretsmanager:GetSecretValue"],Resource=var.app_secret_arn}]}) }
-resource "aws_iam_role" "task" { name="${var.name}-ecs-task";assume_role_policy=jsonencode({Version="2012-10-17",Statement=[{Effect="Allow",Principal={Service="ecs-tasks.amazonaws.com"},Action="sts:AssumeRole"}]}) }
-resource "aws_iam_role_policy" "model_s3" { name="model-artifacts";role=aws_iam_role.task.id;policy=jsonencode({Version="2012-10-17",Statement=[{Effect="Allow",Action=["s3:GetObject","s3:PutObject","s3:ListBucket"],Resource=["arn:aws:s3:::${var.model_bucket}","arn:aws:s3:::${var.model_bucket}/*"]}]}) }
-locals { common_environment=[{name="APP_ENV",value="production"},{name="DEBUG",value="false"},{name="REDIS_URL",value=var.redis_url},{name="ALLOWED_ORIGINS",value="[]"},{name="TRUSTED_HOSTS",value=var.trusted_hosts},{name="MODEL_ARTIFACT_BUCKET",value=var.model_bucket},{name="AWS_REGION",value=var.aws_region}] common_secrets=[{name="DATABASE_URL",valueFrom="${var.app_secret_arn}:DATABASE_URL::"},{name="DATABASE_URL_SYNC",valueFrom="${var.app_secret_arn}:DATABASE_URL_SYNC::"},{name="SECRET_KEY",valueFrom="${var.app_secret_arn}:SECRET_KEY::"},{name="EVENT_INGEST_KEY",valueFrom="${var.app_secret_arn}:EVENT_INGEST_KEY::"}] }
-resource "aws_ecs_task_definition" "backend" { family="${var.name}-backend";requires_compatibilities=["FARGATE"];network_mode="awsvpc";cpu=tostring(var.cpu);memory=tostring(var.memory);execution_role_arn=aws_iam_role.execution.arn;task_role_arn=aws_iam_role.task.arn;container_definitions=jsonencode([{name="backend",image=var.backend_image,essential=true,portMappings=[{containerPort=8000,hostPort=8000,protocol="tcp"}],environment=local.common_environment,secrets=local.common_secrets,logConfiguration={logDriver="awslogs",options={"awslogs-group"=aws_cloudwatch_log_group.api.name,"awslogs-region"=var.aws_region,"awslogs-stream-prefix"="backend"}}}]) }
-resource "aws_ecs_task_definition" "generator" { family="${var.name}-generator";requires_compatibilities=["FARGATE"];network_mode="awsvpc";cpu="1024";memory="2048";execution_role_arn=aws_iam_role.execution.arn;task_role_arn=aws_iam_role.task.arn;container_definitions=jsonencode([{name="generator",image=var.generator_image,essential=true,environment=[{name="GENERATOR_USERS",value="50000"},{name="TARGET_EVENTS",value="1200000"},{name="GENERATOR_SEED",value="42"}],secrets=[{name="DATABASE_URL_SYNC",valueFrom="${var.app_secret_arn}:DATABASE_URL_SYNC::"}],logConfiguration={logDriver="awslogs",options={"awslogs-group"=aws_cloudwatch_log_group.generator.name,"awslogs-region"=var.aws_region,"awslogs-stream-prefix"="generator"}}}]) }
-resource "aws_ecs_service" "backend" { name="${var.name}-backend";cluster=aws_ecs_cluster.this.id;task_definition=aws_ecs_task_definition.backend.arn;desired_count=var.desired_count;launch_type="FARGATE";health_check_grace_period_seconds=60;network_configuration { subnets=var.public_subnet_ids;security_groups=[var.security_group_id];assign_public_ip=true } load_balancer { target_group_arn=var.target_group_arn;container_name="backend";container_port=8000 } lifecycle { ignore_changes=[task_definition] } }
+resource "aws_cloudwatch_log_group" "api" {
+  name              = "/ecs/${var.name}/api"
+  retention_in_days = 14
+}
+
+resource "aws_cloudwatch_log_group" "event_worker" {
+  name              = "/ecs/${var.name}/event-worker"
+  retention_in_days = 14
+}
+
+resource "aws_cloudwatch_log_group" "generator" {
+  name              = "/ecs/${var.name}/generator"
+  retention_in_days = 7
+}
+
+resource "aws_ecs_cluster" "this" {
+  name = var.name
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+resource "aws_iam_role" "execution" {
+  name = "${var.name}-ecs-execution"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "execution" {
+  role       = aws_iam_role.execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy" "secret" {
+  name = "app-secret"
+  role = aws_iam_role.execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = var.app_secret_arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "task" {
+  name = "${var.name}-ecs-task"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "model_artifacts" {
+  name = "model-artifacts"
+  role = aws_iam_role.task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket",
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.model_bucket}",
+          "arn:aws:s3:::${var.model_bucket}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey",
+        ]
+        Resource = var.model_kms_key_arn
+      }
+    ]
+  })
+}
+
+locals {
+  common_environment = [
+    {
+      name  = "APP_ENV"
+      value = "production"
+    },
+    {
+      name  = "DEBUG"
+      value = "false"
+    },
+    {
+      name  = "REDIS_URL"
+      value = var.redis_url
+    },
+    {
+      name  = "ALLOWED_ORIGINS"
+      value = "[]"
+    },
+    {
+      name  = "TRUSTED_HOSTS"
+      value = var.trusted_hosts
+    },
+    {
+      name  = "MODEL_ARTIFACT_BUCKET"
+      value = var.model_bucket
+    },
+    {
+      name  = "AWS_REGION"
+      value = var.aws_region
+    },
+  ]
+
+  common_secrets = [
+    {
+      name      = "DATABASE_URL"
+      valueFrom = "${var.app_secret_arn}:DATABASE_URL::"
+    },
+    {
+      name      = "DATABASE_URL_SYNC"
+      valueFrom = "${var.app_secret_arn}:DATABASE_URL_SYNC::"
+    },
+    {
+      name      = "SECRET_KEY"
+      valueFrom = "${var.app_secret_arn}:SECRET_KEY::"
+    },
+    {
+      name      = "EVENT_INGEST_KEY"
+      valueFrom = "${var.app_secret_arn}:EVENT_INGEST_KEY::"
+    },
+  ]
+}
+
+resource "aws_ecs_task_definition" "backend" {
+  family                   = "${var.name}-backend"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = tostring(var.cpu)
+  memory                   = tostring(var.memory)
+  execution_role_arn       = aws_iam_role.execution.arn
+  task_role_arn            = aws_iam_role.task.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "backend"
+      image     = var.backend_image
+      essential = true
+
+      portMappings = [
+        {
+          containerPort = 8000
+          hostPort      = 8000
+          protocol      = "tcp"
+        }
+      ]
+
+      environment = local.common_environment
+      secrets     = local.common_secrets
+
+      healthCheck = {
+        command = [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/live')\""
+        ]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 20
+      }
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.api.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "backend"
+        }
+      }
+    }
+  ])
+}
+
+resource "aws_ecs_task_definition" "event_worker" {
+  family                   = "${var.name}-event-worker"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.execution.arn
+  task_role_arn            = aws_iam_role.task.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "event-worker"
+      image     = var.backend_image
+      essential = true
+      command   = ["python", "-m", "app.jobs.consume_events"]
+
+      portMappings = [
+        {
+          containerPort = 9101
+          hostPort      = 9101
+          protocol      = "tcp"
+        }
+      ]
+
+      environment = local.common_environment
+      secrets     = local.common_secrets
+
+      healthCheck = {
+        command = [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:9101/metrics')\""
+        ]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 20
+      }
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.event_worker.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "event-worker"
+        }
+      }
+    }
+  ])
+}
+
+resource "aws_ecs_task_definition" "generator" {
+  family                   = "${var.name}-generator"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "1024"
+  memory                   = "2048"
+  execution_role_arn       = aws_iam_role.execution.arn
+  task_role_arn            = aws_iam_role.task.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "generator"
+      image     = var.generator_image
+      essential = true
+
+      environment = [
+        {
+          name  = "GENERATOR_USERS"
+          value = "50000"
+        },
+        {
+          name  = "TARGET_EVENTS"
+          value = "1200000"
+        },
+        {
+          name  = "GENERATOR_SEED"
+          value = "42"
+        },
+      ]
+
+      secrets = [
+        {
+          name      = "DATABASE_URL_SYNC"
+          valueFrom = "${var.app_secret_arn}:DATABASE_URL_SYNC::"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.generator.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "generator"
+        }
+      }
+    }
+  ])
+}
+
+resource "aws_ecs_service" "backend" {
+  name            = "${var.name}-backend"
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.backend.arn
+  desired_count   = var.desired_count
+  launch_type     = "FARGATE"
+
+  health_check_grace_period_seconds = 60
+
+  network_configuration {
+    subnets          = var.public_subnet_ids
+    security_groups  = [var.security_group_id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = var.target_group_arn
+    container_name   = "backend"
+    container_port   = 8000
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
+}
+
+resource "aws_ecs_service" "event_worker" {
+  name            = "${var.name}-event-worker"
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.event_worker.arn
+  desired_count   = var.event_worker_desired_count
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = var.public_subnet_ids
+    security_groups  = [var.security_group_id]
+    assign_public_ip = true
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
+}

@@ -1,1 +1,3 @@
-output "enabled_jobs"{value=keys(local.jobs)}
+output "enabled_jobs" {
+  value = keys(local.jobs)
+}
