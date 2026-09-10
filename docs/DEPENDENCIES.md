@@ -20,7 +20,7 @@
 - NumPy
 - Pandas
 - scikit-learn
-- XGBoost
+- XGBoost CPU 3.4.1
 - SHAP
 - SciPy
 - statsmodels
@@ -61,7 +61,7 @@
 - Vitest
 - Testing Library
 - jsdom
-- Playwright-style e2e source test
+- Vitest and Testing Library component tests
 
 ## Infrastructure / operations
 

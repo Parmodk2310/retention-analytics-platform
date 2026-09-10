@@ -1,63 +1,60 @@
-# Event Pipeline
+# Event pipeline
 
-## Architecture
+## Purpose
 
-Client → FastAPI → Redis Streams → consumer group → PostgreSQL.
+The ingestion path separates API latency from database persistence while preserving stable event
+identity and observable failure handling.
 
-## Delivery semantics
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as FastAPI
+    participant R as Redis Stream
+    participant W as Worker
+    participant P as PostgreSQL
+    C->>A: Validated batch + ingest key
+    A->>R: Enqueue unique events
+    A-->>C: 202 Accepted
+    W->>R: Read consumer-group batch
+    W->>P: Insert idempotently
+    W->>R: ACK after commit
+```
 
-- At-least-once transport.
-- Stable event identity before enqueue.
-- Request and persistence deduplication.
-- PostgreSQL uniqueness is the final concurrency-safe defense.
-- Messages are ACKed only after successful persistence.
-- Failed messages remain pending for recovery.
-- Poison messages are isolated in a bounded DLQ.
+## Delivery contract
 
-## Reliability
+- Transport is at least once, not exactly once.
+- Producers create stable event IDs before enqueueing.
+- The API removes duplicates within a request.
+- PostgreSQL uniqueness is the final defense across retries and concurrent consumers.
+- Workers acknowledge only after a successful database commit.
+- Failed deliveries remain pending for recovery.
+- Messages exceeding the delivery threshold move to a bounded DLQ.
 
-- Pending-message recovery.
-- Maximum delivery threshold before DLQ.
-- Bounded PostgreSQL persistence batches.
-- Admission backpressure with HTTP 503 and Retry-After.
-- No destructive MAXLEN trimming on the primary ingestion stream.
+## Backpressure and recovery
 
-## Freshness
-
-Successful persistence updates a Redis freshness watermark.
-
-Active analytics views refresh within approximately 30 seconds.
+The API checks stream backlog before accepting a batch. When the configured limit is reached it
+returns HTTP 503 with `Retry-After`; it does not destructively trim the primary stream. Consumers
+claim sufficiently idle pending messages, process bounded database batches, and preserve failed
+messages for retry or DLQ inspection.
 
 ## Observability
 
-Prometheus monitors:
-
-- queued events
-- persisted events
-- duplicates
-- retries
-- DLQ activity
-- backpressure
-- stream backlog
-- pending messages
-- consumer lag
-- freshness
-- persistence latency
-
-Grafana provides an event-pipeline dashboard and Alertmanager receives pipeline alerts.
+The pipeline exports queued, persisted, duplicate, retry, DLQ, backlog, pending, lag, freshness and
+persistence-latency signals. Successful commits update a Redis freshness watermark consumed by the
+system-health API and alerts.
 
 ## Local benchmark
 
-Environment: local Docker Desktop / WSL2.
+A controlled WSL2/Docker run processed 2,000 events in 2.621 seconds end-to-end (763.06 events/s)
+with zero final backlog, pending messages and consumer lag. This is local evidence only—not a cloud
+capacity or production SLO.
 
-- Events: 2,000
-- Persisted: 2,000
-- Publish time: 0.113 s
-- End-to-end time: 2.621 s
-- Throughput: 763.06 events/s
-- Final backlog: 0
-- Pending: 0
-- Consumer lag: 0
-- Database restored to 1,176,283 synthetic events after cleanup.
+## Operational response
 
-This benchmark characterizes the local development environment and is not presented as a production-cloud throughput guarantee.
+1. Stop increasing traffic when admission backpressure activates.
+2. Check worker availability, backlog, pending count, consumer lag and database latency.
+3. Recover idle pending messages before replaying producers.
+4. Inspect the DLQ; correct the producer or schema before replay.
+5. Confirm the freshness watermark returns within its configured SLA.
+
+Never delete the primary stream or DLQ as a first response.
