@@ -278,8 +278,7 @@ commercial product of the same or a similar name.
 **Parmod K** — Data Science & ML Engineering
 
 - GitHub: [@Parmodk2310](https://github.com/Parmodk2310)
-- Portfolio: add the canonical portfolio URL after it is final and publicly available.
-
+- Portfolio: coming soon
 ## License
 
 Licensed under the [Apache License 2.0](LICENSE). Synthetic sample data and project documentation
